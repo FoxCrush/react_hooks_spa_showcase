@@ -1,8 +1,8 @@
-.App {
-  text-align: center;
+.MainViewList {
+  list-style: none;
 }
 
-.App-logo {
+.AppLogo {
   height: 40vmin;
   pointer-events: none;
 }

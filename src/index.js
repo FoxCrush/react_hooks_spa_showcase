@@ -4,11 +4,13 @@ import './index.css';
 import 'modern-normalize/modern-normalize.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Main from './routes/main';
+import ErrorPage from './routes/error-page';
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <Main />,
+    errorElement: <ErrorPage />,
   },
 ]);
 

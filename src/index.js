@@ -6,6 +6,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Main from './routes/main-view';
 import ErrorPage from './routes/utility/error-page';
 import RamMainView from './routes/rick-and-morty-view';
+import RamCharacterView from './routes/ram-character-veiw';
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,11 @@ const router = createBrowserRouter([
         element: <RamMainView />,
       },
     ],
+  },
+  {
+    path: '/rickandmorty/:id',
+    element: <RamCharacterView />,
+    errorElement: <ErrorPage />,
   },
 ]);
 

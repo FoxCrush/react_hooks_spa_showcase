@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { Fragment, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import styles from './Ram-view.module.css';
 
 const ramRequestInstance = axios.create({
@@ -25,7 +26,9 @@ export default function RamMainView() {
         {characters.map(character => {
           return (
             <li key={character.id}>
-              {character.id} {character.name}
+              <Link to={`${character.id}`}>
+                {character.id} {character.name}
+              </Link>
             </li>
           );
         })}

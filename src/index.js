@@ -14,7 +14,7 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
-        path: 'contacts/:contactId',
+        path: 'rickandmorty',
         element: <RamMainView />,
       },
     ],

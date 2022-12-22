@@ -12,7 +12,7 @@ export default function Main() {
           <Link to={`/`}>Back to start view</Link>
         </li>
         <li className={styles.MainViewListItem}>
-          <Link to={`contacts/1`}>Rick and Morty API</Link>
+          <Link to={`rickandmorty`}>Rick and Morty API</Link>
         </li>
         <li className={styles.MainViewListItem}>
           <p>In progress</p>

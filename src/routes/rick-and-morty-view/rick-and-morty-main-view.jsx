@@ -21,7 +21,7 @@ export default function RamMainView() {
       .catch(error => setError(error));
 
     return () => {
-      controller.abort();
+      // controller.abort();
       console.log('invoced');
     };
   }, [setAllCharacters]);

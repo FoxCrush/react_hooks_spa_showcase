@@ -2,13 +2,13 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import 'modern-normalize/modern-normalize.css';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createHashRouter, RouterProvider } from 'react-router-dom';
 import Main from './routes/main-view';
 import ErrorPage from './routes/utility/error-page';
 import RamMainView from './routes/rick-and-morty-view';
 import RamCharacterView from './routes/ram-character-veiw';
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: '/',
     element: <Main />,

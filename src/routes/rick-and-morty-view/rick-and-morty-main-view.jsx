@@ -13,16 +13,18 @@ export default function RamMainView() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    console.log('called useEffectFunc');
     ramRequestInstance
       .get('character', { signal: controller.signal })
       .then(({ data }) => {
         setAllCharacters(data.results);
       })
-      .catch(error => setError(error));
+      .catch(error => setError(error))
+      .finally(console.log('request settled'));
 
     return () => {
       // controller.abort();
-      console.log('invoced');
+      console.log('invoced preUseEffectFunc');
     };
   }, [setAllCharacters]);
 

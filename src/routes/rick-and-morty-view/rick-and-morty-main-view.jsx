@@ -22,10 +22,7 @@ export default function RamMainView() {
       .catch(error => setError(error))
       .finally(console.log('request settled'));
 
-    return () => {
-      // controller.abort();
-      console.log('invoced preUseEffectFunc');
-    };
+    return () => controller.abort;
   }, [setAllCharacters]);
 
   return (

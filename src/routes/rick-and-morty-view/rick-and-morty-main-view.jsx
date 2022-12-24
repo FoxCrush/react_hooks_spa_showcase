@@ -21,7 +21,7 @@ export default function RamMainView() {
       })
       .catch(error => setError(error))
       .finally(console.log('request settled'));
-
+    // Decent way to cancel request in case of component unmount before req settled
     return () => controller.abort;
   }, [setAllCharacters]);
 

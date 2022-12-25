@@ -13,17 +13,15 @@ export default function RamMainView() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    console.log('called useEffectFunc');
     ramRequestInstance
       .get('character', { signal: controller.signal })
       .then(({ data }) => {
         setAllCharacters(data.results);
       })
-      .catch(error => setError(error))
-      .finally(console.log('request settled'));
+      .catch(error => setError(error));
     // Decent way to cancel request in case of component unmount before req settled
     return () => controller.abort;
-  }, [setAllCharacters]);
+  }, []);
 
   return (
     <Fragment>

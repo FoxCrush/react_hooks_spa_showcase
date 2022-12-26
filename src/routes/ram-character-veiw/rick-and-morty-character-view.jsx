@@ -2,15 +2,15 @@ import axios from 'axios';
 import React, { Fragment, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
+const ramCharRequestInstance = axios.create({
+  baseURL: 'https://rickandmortyapi.com/api/character',
+});
+const controller = new AbortController();
+
 export default function RamCharacterView() {
   const params = useParams();
   const [character, setCharacter] = useState({});
   const [error, setError] = useState(null);
-
-  const ramCharRequestInstance = axios.create({
-    baseURL: 'https://rickandmortyapi.com/api/character',
-  });
-  const controller = new AbortController();
 
   useEffect(() => {
     ramCharRequestInstance
@@ -19,18 +19,25 @@ export default function RamCharacterView() {
         setCharacter(data);
       })
       .catch(error => setError(error));
-    console.log('character', character);
+
     return () => controller.abort;
-  }, []);
+  }, [params.id]);
 
-  const { id, name } = character;
+  const { id, name, image, status, species } = character;
 
-  return (
-    <Fragment>
-      {/* {charId ?? console.log('no charID')} */}
-      <h3>Rick and morty character view</h3>
-      <p>Character with ID: {id}</p>
-      <p>Character with Name: {name}</p>
-    </Fragment>
-  );
+  if (error) {
+    return <h2>{`HTTP Request error message: ${error.message}`}</h2>;
+  } else {
+    return (
+      <Fragment>
+        <h3>Rick and morty character view</h3>
+
+        <img src={image} alt={`${name}'s iamge`} />
+        <p>Character with ID: {id}</p>
+        <p>Character with Name: {name}</p>
+        <p>Character with Status: {status}</p>
+        <p>Character's Species: {species}</p>
+      </Fragment>
+    );
+  }
 }

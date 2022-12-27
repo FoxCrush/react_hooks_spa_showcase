@@ -3,6 +3,8 @@
 }
 
 .AppLogo {
+  position: absolute;
+  margin-left: 50%;
   height: 40vmin;
   pointer-events: none;
 }

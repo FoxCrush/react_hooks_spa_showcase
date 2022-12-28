@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { Fragment, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import TestComponent from '../utility/testComponent';
 import styles from './Ram-view.module.css';
 
 const ramRequestInstance = axios.create({
@@ -25,6 +26,7 @@ export default function RamMainView() {
 
   return (
     <Fragment>
+      <TestComponent props={'test prop'} />
       <h2 className={styles.Lable}>Rick and Morty view</h2>
       {error && <h3>{`HTTP Request error message: ${error.message}`}</h3>}
       <ul>

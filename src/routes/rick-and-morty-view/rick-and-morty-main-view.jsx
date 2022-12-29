@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { Fragment, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import TestComponent from '../utility/testComponent';
 import styles from './Ram-view.module.css';
+import ReactPaginate from 'react-paginate';
 
 const ramRequestInstance = axios.create({
   baseURL: 'https://rickandmortyapi.com/api/',
@@ -24,9 +24,12 @@ export default function RamMainView() {
     return () => controller.abort;
   }, []);
 
+  const handlePageClick = event => {
+    console.log(`pagination page click`, event);
+  };
+
   return (
     <Fragment>
-      <TestComponent props={'test prop'} />
       <h2 className={styles.Lable}>Rick and Morty view</h2>
       {error && <h3>{`HTTP Request error message: ${error.message}`}</h3>}
       <ul>
@@ -40,6 +43,15 @@ export default function RamMainView() {
           );
         })}
       </ul>
+      <ReactPaginate
+        breakLabel="..."
+        nextLabel="next >"
+        onPageChange={handlePageClick}
+        pageRangeDisplayed={5}
+        pageCount={5}
+        previousLabel="< previous"
+        renderOnZeroPageCount={null}
+      />
     </Fragment>
   );
 }

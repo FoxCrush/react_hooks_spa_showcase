@@ -4,20 +4,22 @@ import { Link } from 'react-router-dom';
 import styles from './Ram-view.module.css';
 import ReactPaginate from 'react-paginate';
 
-const ramRequestInstance = axios.create({
+const ramCharRequestInstance = axios.create({
   baseURL: 'https://rickandmortyapi.com/api/',
 });
 const controller = new AbortController();
 
 export default function RamMainView() {
   const [characters, setAllCharacters] = useState([]);
+  const [info, setInfo] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    ramRequestInstance
+    ramCharRequestInstance
       .get('character', { signal: controller.signal })
       .then(({ data }) => {
         setAllCharacters(data.results);
+        setInfo(data.info);
       })
       .catch(error => setError(error));
     // Decent way to cancel request in case of component unmount before req settled
@@ -25,7 +27,11 @@ export default function RamMainView() {
   }, []);
 
   const handlePageClick = event => {
-    console.log(`pagination page click`, event);
+    const { selected } = event;
+    ramCharRequestInstance
+      .get(`character/?page=${selected + 1}`)
+      .then(({ data }) => setAllCharacters(data.results))
+      .catch(error => setError(error));
   };
 
   return (
@@ -47,8 +53,8 @@ export default function RamMainView() {
         breakLabel="..."
         nextLabel="next >"
         onPageChange={handlePageClick}
-        pageRangeDisplayed={5}
-        pageCount={5}
+        pageRangeDisplayed={2}
+        pageCount={info.pages}
         previousLabel="< previous"
         renderOnZeroPageCount={null}
       />

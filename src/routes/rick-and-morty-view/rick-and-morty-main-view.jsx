@@ -2,7 +2,7 @@ import axios from 'axios';
 import { Fragment, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './Ram-view.module.css';
-import ReactPaginate from 'react-paginate';
+import RamPaginationLine from '../../components/pagination/';
 
 const ramCharRequestInstance = axios.create({
   baseURL: 'https://rickandmortyapi.com/api/',
@@ -26,17 +26,9 @@ export default function RamMainView() {
     return () => controller.abort;
   }, []);
 
-  const handlePageClick = event => {
-    const { selected } = event;
-    ramCharRequestInstance
-      .get(`character/?page=${selected + 1}`)
-      .then(({ data }) => {
-        setAllCharacters(data.results);
-        setDataInfo(data.info);
-      })
-      .catch(error => setError(error));
-    console.log('dataInfo.pages in pageClick', dataInfo.pages);
-  };
+  useEffect(() => {
+    console.log('page changed effect');
+  }, [dataInfo]);
 
   return (
     <Fragment>
@@ -52,16 +44,8 @@ export default function RamMainView() {
             </li>
           );
         })}
+        <RamPaginationLine />
       </ul>
-      <ReactPaginate
-        breakLabel="..."
-        nextLabel="next >"
-        onPageChange={handlePageClick}
-        pageRangeDisplayed={2}
-        pageCount={dataInfo.pages}
-        previousLabel="< previous"
-        renderOnZeroPageCount={null}
-      />
     </Fragment>
   );
 }

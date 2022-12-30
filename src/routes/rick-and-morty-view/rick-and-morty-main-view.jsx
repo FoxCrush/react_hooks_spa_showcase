@@ -26,9 +26,16 @@ export default function RamMainView() {
     return () => controller.abort;
   }, []);
 
-  useEffect(() => {
-    console.log('page changed effect');
-  }, [dataInfo]);
+  const handlePageClick = event => {
+    const { selected } = event;
+    ramCharRequestInstance
+      .get(`character/?page=${selected + 1}`)
+      .then(({ data }) => {
+        setAllCharacters(data.results);
+        setDataInfo(data.info);
+      })
+      .catch(error => setError(error));
+  };
 
   return (
     <Fragment>
@@ -44,7 +51,10 @@ export default function RamMainView() {
             </li>
           );
         })}
-        <RamPaginationLine />
+        <RamPaginationLine
+          onPageClick={handlePageClick}
+          pagesAmount={dataInfo.pages}
+        />
       </ul>
     </Fragment>
   );

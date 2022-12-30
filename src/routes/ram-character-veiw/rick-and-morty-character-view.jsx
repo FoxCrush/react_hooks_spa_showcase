@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { Fragment, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 const ramCharRequestInstance = axios.create({
   baseURL: 'https://rickandmortyapi.com/api/character',
@@ -30,6 +30,7 @@ export default function RamCharacterView() {
   } else {
     return (
       <Fragment>
+        <Link to={`/rickandmorty`}>Back to List</Link>
         <h3>Rick and morty character view</h3>
 
         <img src={image} alt={`${name}'s iamge`} />
@@ -37,6 +38,7 @@ export default function RamCharacterView() {
         <p>Character with Name: {name}</p>
         <p>Character with Status: {status}</p>
         <p>Character's Species: {species}</p>
+        <Link to={`/rickandmorty`}>Back to List</Link>
       </Fragment>
     );
   }

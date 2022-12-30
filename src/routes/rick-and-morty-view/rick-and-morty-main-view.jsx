@@ -11,7 +11,7 @@ const controller = new AbortController();
 
 export default function RamMainView() {
   const [characters, setAllCharacters] = useState([]);
-  const [info, setInfo] = useState([]);
+  const [dataInfo, setDataInfo] = useState({ pages: 1 });
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -19,7 +19,7 @@ export default function RamMainView() {
       .get('character', { signal: controller.signal })
       .then(({ data }) => {
         setAllCharacters(data.results);
-        setInfo(data.info);
+        setDataInfo(data.info);
       })
       .catch(error => setError(error));
     // Decent way to cancel request in case of component unmount before req settled
@@ -30,8 +30,12 @@ export default function RamMainView() {
     const { selected } = event;
     ramCharRequestInstance
       .get(`character/?page=${selected + 1}`)
-      .then(({ data }) => setAllCharacters(data.results))
+      .then(({ data }) => {
+        setAllCharacters(data.results);
+        setDataInfo(data.info);
+      })
       .catch(error => setError(error));
+    console.log('dataInfo.pages in pageClick', dataInfo.pages);
   };
 
   return (
@@ -54,7 +58,7 @@ export default function RamMainView() {
         nextLabel="next >"
         onPageChange={handlePageClick}
         pageRangeDisplayed={2}
-        pageCount={info.pages}
+        pageCount={dataInfo.pages}
         previousLabel="< previous"
         renderOnZeroPageCount={null}
       />

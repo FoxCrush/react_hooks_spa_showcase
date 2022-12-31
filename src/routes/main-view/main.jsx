@@ -1,23 +1,26 @@
 import { Fragment } from 'react';
-import { Outlet, Link } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import logo from './logo.svg';
 import styles from './Main.module.css';
+import Container from 'react-bootstrap/Container';
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
 
 export default function Main() {
   return (
     <Fragment>
-      <img src={logo} className={styles.AppLogo} alt="logo" />
-      <ul className={styles.MainViewList}>
-        <li className={styles.MainViewListItem}>
-          <Link to={`/`}>Back to start view</Link>
-        </li>
-        <li className={styles.MainViewListItem}>
-          <Link to={`rickandmorty`}>Rick and Morty API</Link>
-        </li>
-        <li className={styles.MainViewListItem}>
-          <p>In progress</p>
-        </li>
-      </ul>
+      <Navbar bg="primary" variant="dark">
+        <Container>
+          <img src={logo} className={styles.AppLogo} alt="logo" />
+
+          <Navbar.Brand href="#/">Navbar</Navbar.Brand>
+          <Nav className="me-auto">
+            <Nav.Link href="#/">Home</Nav.Link>
+            <Nav.Link href="#/rickandmorty">Rick and Morty API</Nav.Link>
+            <Nav.Link href="#Error">Error</Nav.Link>
+          </Nav>
+        </Container>
+      </Navbar>
       <div id="detail">
         <Outlet />
       </div>

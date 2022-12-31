@@ -7,6 +7,7 @@ import Main from './routes/main-view';
 import ErrorPage from './routes/utility/error-page';
 import RamMainView from './routes/rick-and-morty-view';
 import RamCharacterView from './routes/ram-character-veiw';
+import 'bootstrap/dist/css/bootstrap.min.css'; // bootstrap required
 
 const router = createHashRouter([
   {

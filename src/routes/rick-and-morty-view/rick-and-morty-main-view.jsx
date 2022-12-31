@@ -3,6 +3,7 @@ import { Fragment, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './Ram-view.module.css';
 import RamPaginationLine from '../../components/pagination/';
+import ListGroup from 'react-bootstrap/ListGroup';
 
 const ramCharRequestInstance = axios.create({
   baseURL: 'https://rickandmortyapi.com/api/',
@@ -41,21 +42,21 @@ export default function RamMainView() {
     <Fragment>
       <h2 className={styles.Lable}>Rick and Morty view</h2>
       {error && <h3>{`HTTP Request error message: ${error.message}`}</h3>}
-      <ul>
+      <ListGroup as="ul">
         {characters.map(character => {
           return (
-            <li key={character.id}>
+            <ListGroup.Item as="li" action variant="info" key={character.id}>
               <Link to={`${character.id}`}>
                 {character.id} {character.name}
               </Link>
-            </li>
+            </ListGroup.Item>
           );
         })}
         <RamPaginationLine
           onPageClick={handlePageClick}
           pagesAmount={dataInfo.pages}
         />
-      </ul>
+      </ListGroup>
     </Fragment>
   );
 }

@@ -1,0 +1,15 @@
+.container {
+  display: flex;
+  list-style: none;
+}
+.pageItem {
+  background-color: aquamarine;
+  size: 20px;
+}
+.pageLink {
+  background-color: blue;
+  size: 20px;
+}
+.active {
+  background-color: tomato;
+}

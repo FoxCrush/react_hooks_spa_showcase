@@ -1,15 +1,19 @@
 .container {
-  display: flex;
   list-style: none;
+  display: flex;
+  justify-content: center;
+  margin: auto 0px;
 }
 .pageItem {
   background-color: aquamarine;
-  size: 20px;
+  float: left;
+  text-decoration: none;
 }
 .pageLink {
-  background-color: blue;
-  size: 20px;
+  display: block;
+  padding: 8px 16px;
 }
 .active {
-  background-color: tomato;
+  background-color: #4caf50;
+  color: white;
 }

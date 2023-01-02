@@ -9,16 +9,15 @@ import Navbar from 'react-bootstrap/Navbar';
 export default function Main() {
   return (
     <Fragment>
-      <Navbar bg="primary" variant="dark">
+      <Navbar bg="primary" variant="dark" style={{ position: 'relative' }}>
         <Container>
-          <img src={logo} className={styles.AppLogo} alt="logo" />
-
           <Navbar.Brand href="#/">Navbar</Navbar.Brand>
           <Nav className="me-auto">
             <Nav.Link href="#/">Home</Nav.Link>
             <Nav.Link href="#/rickandmorty">Rick and Morty API</Nav.Link>
             <Nav.Link href="#Error">Error</Nav.Link>
           </Nav>
+          <img src={logo} className={styles.AppLogo} alt="logo" />
         </Container>
       </Navbar>
       <div id="detail">

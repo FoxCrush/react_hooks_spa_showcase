@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 // import styles from './Ram-view.module.css';
 import RamPaginationLine from '../../components/pagination/';
 import ListGroup from 'react-bootstrap/ListGroup';
+import RamFilterComponent from '../../components/ramFilterComponent';
 
 const ramCharRequestInstance = axios.create({
   baseURL: 'https://rickandmortyapi.com/api/',
@@ -44,6 +45,7 @@ export default function RamMainView() {
   return (
     <Fragment>
       {error && <h3>{`HTTP Request error message: ${error.message}`}</h3>}
+      <RamFilterComponent />
       <ListGroup as="ul">
         {characters.map(character => {
           return (

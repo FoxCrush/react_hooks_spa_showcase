@@ -1,18 +1,22 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 export const counterSlice = createSlice({
-  name: 'optionButtonVisibility',
+  name: 'optionVisibilityControl',
   initialState: {
-    isVisible: false,
+    isButtonVisible: false,
+    isFilterVisible: false
   },
   reducers: {
-    toggleOptionButton: (state) => {
-      state.isVisible = !state.isVisible
-    }
+    toggleButtonVisibility: (state) => {
+      state.isButtonVisible = !state.isButtonVisible
+    },
+    toggleFilterVisibility: (state) => {
+        state.isFilterVisible = !state.isFilterVisible
+      }
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { toggleOptionButton } = counterSlice.actions
+export const { toggleButtonVisibility, toggleFilterVisibility } = counterSlice.actions
 
 export default counterSlice.reducer

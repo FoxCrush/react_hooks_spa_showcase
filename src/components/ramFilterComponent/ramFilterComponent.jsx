@@ -9,8 +9,8 @@ import { useSelector } from 'react-redux'
 // import { toggleOptionButton } from '../../redux/ramReducer'
 
 export default function RamFilterComponent() {
-    const isButtonVisible = useSelector((state) => state.optionButtonVisibility.isVisible)
-    if (!isButtonVisible) {
+    const isFilterVisible = useSelector((state) => state.optionVisibilityControl.isFilterVisible)
+    if (!isFilterVisible) {
         return
     } else { return (
         <Form>

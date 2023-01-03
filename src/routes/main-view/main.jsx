@@ -5,8 +5,13 @@ import styles from './Main.module.css';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
+import Button from 'react-bootstrap/Button';
+import { useSelector } from 'react-redux'
 
 export default function Main() {
+  const isOptionButtonVisible = useSelector((state) => state.optionVisibilityControl.isButtonVisible)
+  console.log("isOptionButtonVisible", isOptionButtonVisible)
+
   return (
     <Fragment>
       <Navbar bg="primary" variant="dark" style={{ position: 'relative' }}>
@@ -16,6 +21,7 @@ export default function Main() {
             <Nav.Link href="#/">Home</Nav.Link>
             <Nav.Link href="#/rickandmorty">Rick and Morty API</Nav.Link>
             <Nav.Link href="#Error">Error</Nav.Link>
+            <Button variant="primary" disabled>Show filter</Button>
           </Nav>
           <img src={logo} className={styles.AppLogo} alt="logo" />
         </Container>

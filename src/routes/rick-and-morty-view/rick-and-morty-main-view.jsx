@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom';
 import RamPaginationLine from '../../components/pagination/';
 import ListGroup from 'react-bootstrap/ListGroup';
 import RamFilterComponent from '../../components/ramFilterComponent';
+import { useDispatch } from 'react-redux'
+import { toggleButtonVisibility } from '../../redux/ramReducer'
 
 const ramCharRequestInstance = axios.create({
   baseURL: 'https://rickandmortyapi.com/api/',
@@ -22,6 +24,13 @@ export default function RamMainView() {
       setAllCharacters(data.results);
       setDataInfo(data.info);
     }).catch(error => setError(error))
+    //redux
+    const dispatch = useDispatch()
+
+  useEffect(() => {
+    //redux
+    dispatch(toggleButtonVisibility());
+  },[dispatch]);
 
   useEffect(() => {
     if (characters.length !== 0) {

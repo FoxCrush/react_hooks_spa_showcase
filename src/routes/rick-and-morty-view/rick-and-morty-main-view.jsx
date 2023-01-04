@@ -30,7 +30,9 @@ export default function RamMainView() {
   useEffect(() => {
     //redux
     dispatch(toggleButtonVisibility());
-  },[dispatch]);
+    return () => dispatch(toggleButtonVisibility())
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[]);
 
   useEffect(() => {
     if (characters.length !== 0) {

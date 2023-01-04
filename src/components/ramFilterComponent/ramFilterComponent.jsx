@@ -59,7 +59,7 @@ export default function RamFilterComponent() {
             >
               <Dropdown.Item eventKey="1">Alive</Dropdown.Item>
               <Dropdown.Item eventKey="2">Dead</Dropdown.Item>
-              <Dropdown.Item eventKey="3" active>Unknown
+              <Dropdown.Item eventKey="3">Unknown
               </Dropdown.Item>
             </DropdownButton></Col>
         </Row>

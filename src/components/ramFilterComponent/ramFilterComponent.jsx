@@ -25,7 +25,7 @@ export default function RamFilterComponent() {
 
                 break;
 
-            default: console.log('switch default', e.currentTarget.outerText)
+            default:
                 break;
         }
     }

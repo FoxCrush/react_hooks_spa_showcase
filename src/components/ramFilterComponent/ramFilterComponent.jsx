@@ -2,33 +2,22 @@ import React, { useState } from 'react';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
-import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { useSelector } from 'react-redux'
+import { ToggleButton } from 'react-bootstrap';
 // import { toggleOptionButton } from '../../redux/ramReducer'
 
 export default function RamFilterComponent() {
     const isFilterVisible = useSelector((state) => state.optionVisibilityControl.isFilterVisible);
-    const [activeDropdownRaw, setActiveDropdownRaw] = useState();
 
+    const [statRadioValue, setStatRadioValue] = useState('1');
 
-    const handleDropdownButtonClick = (e) => {
-        switch (e.currentTarget.outerText) {
-            case 'Alive': console.log('switch first case', e)
-
-                break;
-            case 'Dead': console.log('switch second case', e)
-
-                break;
-            case 'Unknown': console.log('switch third case', e)
-
-                break;
-
-            default:
-                break;
-        }
-    }
+    const statusesRadioArray = [
+        { name: 'Alive'},
+        { name: 'Dead'},
+        { name: 'Unknown'},
+      ];
 
     if (!isFilterVisible) {
         return
@@ -77,10 +66,21 @@ export default function RamFilterComponent() {
               variant='primary'
               title='Status'
             >
-              <Dropdown.Item eventKey="1" onClick={(e)=>{handleDropdownButtonClick(e)}}>Alive</Dropdown.Item>
-              <Dropdown.Item eventKey="2" onClick={(e)=>{handleDropdownButtonClick(e)}}>Dead</Dropdown.Item>
-              <Dropdown.Item eventKey="3" onClick={(e)=>{handleDropdownButtonClick(e)}}>Unknown
-              </Dropdown.Item>
+ <ButtonGroup>
+        {statusesRadioArray.map((status, index) => (
+          <ToggleButton
+            key={index}
+            id={`radio-${index}`}
+            type="radio"
+            name="radio"
+            value={status.name}
+            checked={statRadioValue === status.name}
+            onChange={(e) => setStatRadioValue(e.currentTarget.value)}
+          >
+            {status.name}
+          </ToggleButton>
+        ))}
+      </ButtonGroup>
             </DropdownButton></Col>
         </Row>
       </Form>

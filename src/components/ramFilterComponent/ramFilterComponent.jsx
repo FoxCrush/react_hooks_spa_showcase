@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
@@ -9,7 +9,27 @@ import { useSelector } from 'react-redux'
 // import { toggleOptionButton } from '../../redux/ramReducer'
 
 export default function RamFilterComponent() {
-    const isFilterVisible = useSelector((state) => state.optionVisibilityControl.isFilterVisible)
+    const isFilterVisible = useSelector((state) => state.optionVisibilityControl.isFilterVisible);
+    const [activeDropdownRaw, setActiveDropdownRaw] = useState();
+
+
+    const handleDropdownButtonClick = (e) => {
+        switch (e.currentTarget.outerText) {
+            case 'Alive': console.log('switch first case', e)
+
+                break;
+            case 'Dead': console.log('switch second case', e)
+
+                break;
+            case 'Unknown': console.log('switch third case', e)
+
+                break;
+
+            default: console.log('switch default', e.currentTarget.outerText)
+                break;
+        }
+    }
+
     if (!isFilterVisible) {
         return
     } else { return (
@@ -57,9 +77,9 @@ export default function RamFilterComponent() {
               variant='primary'
               title='Status'
             >
-              <Dropdown.Item eventKey="1">Alive</Dropdown.Item>
-              <Dropdown.Item eventKey="2">Dead</Dropdown.Item>
-              <Dropdown.Item eventKey="3">Unknown
+              <Dropdown.Item eventKey="1" onClick={(e)=>{handleDropdownButtonClick(e)}}>Alive</Dropdown.Item>
+              <Dropdown.Item eventKey="2" onClick={(e)=>{handleDropdownButtonClick(e)}}>Dead</Dropdown.Item>
+              <Dropdown.Item eventKey="3" onClick={(e)=>{handleDropdownButtonClick(e)}}>Unknown
               </Dropdown.Item>
             </DropdownButton></Col>
         </Row>

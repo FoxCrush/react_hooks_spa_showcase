@@ -11,13 +11,18 @@ import { ToggleButton } from 'react-bootstrap';
 export default function RamFilterComponent() {
     const isFilterVisible = useSelector((state) => state.optionVisibilityControl.isFilterVisible);
 
-    const [statRadioValue, setStatRadioValue] = useState('1');
+    const [statRadioValue, setStatRadioValue] = useState('All');
 
     const statusesRadioArray = [
         { name: 'Alive'},
         { name: 'Dead'},
         { name: 'Unknown'},
+        { name: 'All'},
       ];
+
+    const radioBtnHandler = (value) => {
+        setStatRadioValue(value)
+    }
 
     if (!isFilterVisible) {
         return
@@ -74,8 +79,8 @@ export default function RamFilterComponent() {
             type="radio"
             name="radio"
             value={status.name}
+            onChange={(e) => radioBtnHandler(e.currentTarget.value)}
             checked={statRadioValue === status.name}
-            onChange={(e) => setStatRadioValue(e.currentTarget.value)}
           >
             {status.name}
           </ToggleButton>

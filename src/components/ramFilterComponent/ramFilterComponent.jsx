@@ -14,9 +14,9 @@ export default function RamFilterComponent() {
   );
 
   const [statRadioValue, setStatRadioValue] = useState('All');
-  const [optionString, setOptionString] = useState({
+  const [characterQueryParams, setCharacterQueryParams] = useState({
     nameQuery: '',
-    genderQuery: '',
+    genderQuery: [],
     statusQuery: '',
   });
 
@@ -27,35 +27,45 @@ export default function RamFilterComponent() {
     { name: 'All' },
   ];
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    console.log('useEffect', characterQueryParams);
+  }, [characterQueryParams]);
+
+  const rawStringQueryFormating = query => String(query).toLowerCase();
+  const genderQueryFormating = query => {
+    if (characterQueryParams.genderQuery.includes(query)) {
+        return
+    }
+    setCharacterQueryParams(prevParams => ({
+      ...prevParams,
+      genderQuery: [...prevParams.genderQuery, query],
+    }));
+  };
 
   const formChangeHandler = event => {
     switch (event.target.name) {
       case 'name':
-        setOptionString((prevString)=>({...prevString, nameQuery: `${event.target.value}`}))
+        setCharacterQueryParams(prevParams => ({
+          ...prevParams,
+          nameQuery: rawStringQueryFormating(event.target.value),
+        }));
 
         break;
-      case 'gender-male':
-        console.log(`${event.target.name}`);
-
+      case 'male':
+      case 'female':
+      case 'genderless':
+      case 'unknown':
+        genderQueryFormating(event.target.name)
         break;
-      case 'gender-female':
-        console.log(`${event.target.name}`);
 
-        break;
-      case 'gender-genderless':
-        console.log(`${event.target.name}`);
-
-        break;
-      case 'gender-unknown':
-        console.log(`${event.target.name}`);
-
-        break;
       case 'Alive':
       case 'Dead':
       case 'Unknown':
       case 'All':
-        console.log('radio', event.target.value);
+        setCharacterQueryParams(prevParams => ({
+          ...prevParams,
+          statusQuery: rawStringQueryFormating(event.target.value),
+        }));
 
         break;
 
@@ -86,28 +96,28 @@ export default function RamFilterComponent() {
               <Form.Check
                 inline
                 label="Male"
-                name="gender-male"
+                name="male"
                 type="checkbox"
                 id="inline-checkbox-1"
               />
               <Form.Check
                 inline
                 label="Female"
-                name="gender-female"
+                name="female"
                 type="checkbox"
                 id="inline-checkbox-2"
               />
               <Form.Check
                 inline
                 label="Genderless"
-                name="gender-genderless"
+                name="genderless"
                 type="checkbox"
                 id="inline-checkbox-3"
               />
               <Form.Check
                 inline
                 label="Unknown"
-                name="gender-unknown"
+                name="unknown"
                 type="checkbox"
                 id="inline-checkbox-4"
               />

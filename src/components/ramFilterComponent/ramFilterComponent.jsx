@@ -30,20 +30,33 @@ export default function RamFilterComponent() {
   ];
 
   useEffect(() => {
-    if (characterQueryParams.nameQuery !== '') {
+    if (
+      characterQueryParams.nameQuery.length > 0 ||
+      characterQueryParams.genderQuery.length > 0 ||
+      characterQueryParams.statusQuery.length > 0
+    ) {
+      console.log('some value');
+      setCharacterQueryString('/character/?');
+    } else if (characterQueryParams.nameQuery.length > 0) {
+      console.log('name value');
       setCharacterQueryString(
-        `/character/?name=${characterQueryParams.nameQuery}`
+        prevString => `${prevString}?name=${characterQueryParams.nameQuery}`
       );
-    } else if (characterQueryParams.genderQuery !== []) {
-      setCharacterQueryString(prevString =>
-        prevString.concat(characterQueryParams.genderQuery.join(','))
-      );
-    } else if (characterQueryParams.statusQuery !== '') {
-      setCharacterQueryString(prevString =>
-        prevString.concat(characterQueryParams.statusQuery)
-      );
+    } else if (characterQueryParams.genderQuery.length > 0) {
+      console.log('gender value');
+      //   setCharacterQueryString(prevString =>
+      //     prevString.concat(
+      //       `gender=${characterQueryParams.genderQuery.join(',')}`
+      //     )
+      //   );
+    } else if (characterQueryParams.statusQuery.length > 0) {
+      console.log('status value');
+      //   setCharacterQueryString(prevString =>
+      //     prevString.concat(characterQueryParams.statusQuery)
+      //   );
     } else {
-      setCharacterQueryString('/character/');
+      console.log('no value');
+      //   setCharacterQueryString('/character/');
     }
 
     // setCharacterQueryString(

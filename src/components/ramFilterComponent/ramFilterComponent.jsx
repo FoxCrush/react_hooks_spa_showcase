@@ -19,6 +19,8 @@ export default function RamFilterComponent() {
     genderQuery: [],
     statusQuery: '',
   });
+  const [characterQueryString, setCharacterQueryString] =
+    useState('/character/');
 
   const statusesRadioArray = [
     { name: 'Alive' },
@@ -28,13 +30,41 @@ export default function RamFilterComponent() {
   ];
 
   useEffect(() => {
-    console.log('useEffect', characterQueryParams);
+    if (characterQueryParams.nameQuery !== '') {
+      setCharacterQueryString(
+        `/character/?name=${characterQueryParams.nameQuery}`
+      );
+    } else if (characterQueryParams.genderQuery !== []) {
+      setCharacterQueryString(prevString =>
+        prevString.concat(characterQueryParams.genderQuery.join(','))
+      );
+    } else if (characterQueryParams.statusQuery !== '') {
+      setCharacterQueryString(prevString =>
+        prevString.concat(characterQueryParams.statusQuery)
+      );
+    } else {
+      setCharacterQueryString('/character/');
+    }
+
+    // setCharacterQueryString(
+    //   `/character/?name=${characterQueryParams.nameQuery}&status=${
+    //     characterQueryParams.statusQuery
+    //   }&gender=${characterQueryParams.genderQuery.join(',')}`
+    // );
+    // console.log('characterQueryString', characterQueryString);
   }, [characterQueryParams]);
 
   const rawStringQueryFormating = query => String(query).toLowerCase();
   const genderQueryFormating = query => {
     if (characterQueryParams.genderQuery.includes(query)) {
-        return
+      const newQ = characterQueryParams.genderQuery.filter(
+        gender => gender !== query
+      );
+      setCharacterQueryParams(prevParams => ({
+        ...prevParams,
+        genderQuery: newQ,
+      }));
+      return;
     }
     setCharacterQueryParams(prevParams => ({
       ...prevParams,
@@ -55,7 +85,7 @@ export default function RamFilterComponent() {
       case 'female':
       case 'genderless':
       case 'unknown':
-        genderQueryFormating(event.target.name)
+        genderQueryFormating(event.target.name);
         break;
 
       case 'Alive':

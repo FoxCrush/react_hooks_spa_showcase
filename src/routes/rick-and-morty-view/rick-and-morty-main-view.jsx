@@ -4,9 +4,9 @@ import { Link } from 'react-router-dom';
 import RamPaginationLine from '../../components/pagination/';
 import ListGroup from 'react-bootstrap/ListGroup';
 import RamFilterComponent from '../../components/ramFilterComponent';
-import {reqAllCharByPage} from '../../services/ram-request-options'
+import { reqAllCharByPage } from '../../services/ram-request-options';
 import { useDispatch } from 'react-redux';
-import { toggleButtonVisibility } from '../../redux/ramReducer';
+import { toggleButtonVisibility } from '../../redux/ramBtnSlice';
 
 const controller = new AbortController();
 
@@ -19,7 +19,8 @@ export default function RamMainView() {
   );
 
   const ramCharactersRequest = (q, cs) =>
-      reqAllCharByPage(q, cs).then(({ data }) => {
+    reqAllCharByPage(q, cs)
+      .then(({ data }) => {
         setAllCharacters(data.results);
         setDataInfo(data.info);
       })

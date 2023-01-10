@@ -35,36 +35,45 @@ export default function RamFilterComponent() {
       characterQueryParams.genderQuery.length > 0 ||
       characterQueryParams.statusQuery.length > 0
     ) {
-      console.log('some value');
       setCharacterQueryString('/character/?');
-    } else if (characterQueryParams.nameQuery.length > 0) {
-      console.log('name value');
-      setCharacterQueryString(
-        prevString => `${prevString}?name=${characterQueryParams.nameQuery}`
-      );
-    } else if (characterQueryParams.genderQuery.length > 0) {
-      console.log('gender value');
-      //   setCharacterQueryString(prevString =>
-      //     prevString.concat(
-      //       `gender=${characterQueryParams.genderQuery.join(',')}`
-      //     )
-      //   );
-    } else if (characterQueryParams.statusQuery.length > 0) {
-      console.log('status value');
-      //   setCharacterQueryString(prevString =>
-      //     prevString.concat(characterQueryParams.statusQuery)
-      //   );
     } else {
-      console.log('no value');
-      //   setCharacterQueryString('/character/');
+      setCharacterQueryString('/character/');
     }
-
-    // setCharacterQueryString(
-    //   `/character/?name=${characterQueryParams.nameQuery}&status=${
-    //     characterQueryParams.statusQuery
-    //   }&gender=${characterQueryParams.genderQuery.join(',')}`
-    // );
-    // console.log('characterQueryString', characterQueryString);
+    if (characterQueryParams.nameQuery.length > 0) {
+      setCharacterQueryString(
+        prevString => `${prevString}name=${characterQueryParams.nameQuery}`
+      );
+      if (
+        characterQueryParams.genderQuery.length > 0 ||
+        characterQueryParams.statusQuery.length > 0
+      ) {
+        setCharacterQueryString(prevString => `${prevString}&`);
+      }
+    }
+    if (characterQueryParams.genderQuery.length > 0) {
+      setCharacterQueryString(prevString =>
+        prevString.concat(
+          `gender=${characterQueryParams.genderQuery.join(',')}`
+        )
+      );
+      if (
+        characterQueryParams.nameQuery.length > 0 ||
+        characterQueryParams.statusQuery.length > 0
+      ) {
+        setCharacterQueryString(prevString => `${prevString}&`);
+      }
+    }
+    if (characterQueryParams.statusQuery.length > 0) {
+      setCharacterQueryString(prevString =>
+        prevString.concat(`status=${characterQueryParams.statusQuery}`)
+      );
+      if (
+        characterQueryParams.genderQuery.length > 0 ||
+        characterQueryParams.nameQuery.length > 0
+      ) {
+        setCharacterQueryString(prevString => `${prevString}&`);
+      }
+    }
   }, [characterQueryParams]);
 
   const rawStringQueryFormating = query => String(query).toLowerCase();
@@ -104,12 +113,16 @@ export default function RamFilterComponent() {
       case 'Alive':
       case 'Dead':
       case 'Unknown':
-      case 'All':
         setCharacterQueryParams(prevParams => ({
           ...prevParams,
           statusQuery: rawStringQueryFormating(event.target.value),
         }));
-
+        break;
+      case 'All':
+        setCharacterQueryParams(prevParams => ({
+          ...prevParams,
+          statusQuery: '',
+        }));
         break;
 
       default:

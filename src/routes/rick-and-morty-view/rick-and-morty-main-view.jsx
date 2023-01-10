@@ -33,7 +33,11 @@ export default function RamMainView() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    ramCharactersRequest(`character/${filterQueryString}`);
+    if (filterQueryString) {
+      ramCharactersRequest(`character/${filterQueryString}`);
+    } else {
+      ramCharactersRequest('character/');
+    }
   }, [filterQueryString]);
 
   useEffect(() => {

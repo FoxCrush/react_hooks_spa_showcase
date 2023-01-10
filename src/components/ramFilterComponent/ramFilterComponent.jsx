@@ -7,6 +7,7 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { useDispatch, useSelector } from 'react-redux';
 import { ToggleButton } from 'react-bootstrap';
 import { changeQueryString } from '../../redux/ramQuerySlice';
+import debounce from 'lodash.debounce';
 
 export default function RamFilterComponent() {
   const isFilterVisible = useSelector(
@@ -26,7 +27,7 @@ export default function RamFilterComponent() {
 
   useEffect(() => {
     setCharacterQueryString('');
-    if (Object.values(characterQueryParams).join().length > 2) {
+    if (Object.values(characterQueryParams).some(param => param.length > 0)) {
       setCharacterQueryString('?');
       for (const queryOptionName in characterQueryParams) {
         if (characterQueryParams[queryOptionName].length > 0) {
@@ -37,71 +38,15 @@ export default function RamFilterComponent() {
           );
         }
       }
-    } else {
-      setCharacterQueryString('');
     }
   }, [characterQueryParams]);
 
   useEffect(() => {
-    dispatch(changeQueryString(characterQueryString)); //redux
+    if (characterQueryString.length >= 0) {
+      dispatch(changeQueryString(characterQueryString)); //redux
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [characterQueryString]);
-
-  //   useEffect(() => {
-  //     console.log(
-  //       'state changed. String:',
-  //       characterQueryString
-  //       //   'params:',
-  //       //   characterQueryParams
-  //     );
-  //   }, [characterQueryString]);
-
-  //   useEffect(() => {
-  //     if (
-  //       characterQueryParams.name.length > 0 ||
-  //       characterQueryParams.gender.length > 0 ||
-  //       characterQueryParams.status.length > 0
-  //     ) {
-  //       setCharacterQueryString('/character/?');
-  //     } else {
-  //       setCharacterQueryString('/character/');
-  //     }
-  //     if (characterQueryParams.name.length > 0) {
-  //       setCharacterQueryString(
-  //         prevString => `${prevString}name=${characterQueryParams.name}`
-  //       );
-  //       if (
-  //         characterQueryParams.gender.length > 0 ||
-  //         characterQueryParams.status.length > 0
-  //       ) {
-  //         setCharacterQueryString(prevString => `${prevString}&`);
-  //       }
-  //     }
-  //     if (characterQueryParams.gender.length > 0) {
-  //       setCharacterQueryString(prevString =>
-  //         prevString.concat(
-  //           `gender=${characterQueryParams.gender.join(',')}`
-  //         )
-  //       );
-  //       if (
-  //         characterQueryParams.name.length > 0 ||
-  //         characterQueryParams.status.length > 0
-  //       ) {
-  //         setCharacterQueryString(prevString => `${prevString}&`);
-  //       }
-  //     }
-  //     if (characterQueryParams.status.length > 0) {
-  //       setCharacterQueryString(prevString =>
-  //         prevString.concat(`status=${characterQueryParams.status}`)
-  //       );
-  //       if (
-  //         characterQueryParams.gender.length > 0 ||
-  //         characterQueryParams.name.length > 0
-  //       ) {
-  //         setCharacterQueryString(prevString => `${prevString}&`);
-  //       }
-  //     }
-  //   }, [characterQueryParams]);
 
   const rawStringQueryFormating = query => String(query).toLowerCase();
   const genderFormating = query => {
@@ -158,6 +103,10 @@ export default function RamFilterComponent() {
   };
 
   const radioBtnHandler = value => {
+    debounce(() => {
+      console.log('debouncing');
+    }, 300);
+
     setStatRadioValue(value);
   };
 
@@ -212,7 +161,11 @@ export default function RamFilterComponent() {
               key="Primary"
               id={`dropdown-variants-$'Primary'`}
               variant="primary"
-              title="Status"
+              title={
+                characterQueryParams.status
+                  ? characterQueryParams.status
+                  : 'Status'
+              }
             >
               <ButtonGroup>
                 {statusesRadioArray.map((status, index) => (

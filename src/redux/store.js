@@ -1,8 +1,10 @@
-import { configureStore } from '@reduxjs/toolkit'
-import ramFilterVisibilityReducer from './ramReducer'
+import { configureStore } from '@reduxjs/toolkit';
+import ramFilterVisibilityReducer from './ramBtnSlice';
+import ramQueryStringReducer from './ramQuerySlice';
 
 export default configureStore({
   reducer: {
-    optionVisibilityControl:ramFilterVisibilityReducer
+    optionVisibilityControl: ramFilterVisibilityReducer,
+    ramQueryString: ramQueryStringReducer,
   },
-})
+});

@@ -4,93 +4,120 @@ import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { ToggleButton } from 'react-bootstrap';
-// import { toggleOptionButton } from '../../redux/ramReducer'
+import { changeQueryString } from '../../redux/ramQuerySlice';
 
 export default function RamFilterComponent() {
   const isFilterVisible = useSelector(
     state => state.optionVisibilityControl.isFilterVisible
   );
+  const dispatch = useDispatch();
 
   const [statRadioValue, setStatRadioValue] = useState('All');
   const [characterQueryParams, setCharacterQueryParams] = useState({
-    nameQuery: '',
-    genderQuery: [],
-    statusQuery: '',
+    name: '',
+    gender: [],
+    status: '',
   });
-  const [characterQueryString, setCharacterQueryString] =
-    useState('/character/');
+  const [characterQueryString, setCharacterQueryString] = useState('');
 
-  const statusesRadioArray = [
-    { name: 'Alive' },
-    { name: 'Dead' },
-    { name: 'Unknown' },
-    { name: 'All' },
-  ];
+  const statusesRadioArray = ['Alive', 'Dead', 'Unknown', 'All'];
 
   useEffect(() => {
-    if (
-      characterQueryParams.nameQuery.length > 0 ||
-      characterQueryParams.genderQuery.length > 0 ||
-      characterQueryParams.statusQuery.length > 0
-    ) {
-      setCharacterQueryString('/character/?');
+    setCharacterQueryString('');
+    if (Object.values(characterQueryParams).join().length > 2) {
+      setCharacterQueryString('?');
+      for (const queryOptionName in characterQueryParams) {
+        if (characterQueryParams[queryOptionName].length > 0) {
+          setCharacterQueryString(prevString =>
+            prevString.concat(
+              `${queryOptionName}=${characterQueryParams[queryOptionName]}&`
+            )
+          );
+        }
+      }
     } else {
-      setCharacterQueryString('/character/');
-    }
-    if (characterQueryParams.nameQuery.length > 0) {
-      setCharacterQueryString(
-        prevString => `${prevString}name=${characterQueryParams.nameQuery}`
-      );
-      if (
-        characterQueryParams.genderQuery.length > 0 ||
-        characterQueryParams.statusQuery.length > 0
-      ) {
-        setCharacterQueryString(prevString => `${prevString}&`);
-      }
-    }
-    if (characterQueryParams.genderQuery.length > 0) {
-      setCharacterQueryString(prevString =>
-        prevString.concat(
-          `gender=${characterQueryParams.genderQuery.join(',')}`
-        )
-      );
-      if (
-        characterQueryParams.nameQuery.length > 0 ||
-        characterQueryParams.statusQuery.length > 0
-      ) {
-        setCharacterQueryString(prevString => `${prevString}&`);
-      }
-    }
-    if (characterQueryParams.statusQuery.length > 0) {
-      setCharacterQueryString(prevString =>
-        prevString.concat(`status=${characterQueryParams.statusQuery}`)
-      );
-      if (
-        characterQueryParams.genderQuery.length > 0 ||
-        characterQueryParams.nameQuery.length > 0
-      ) {
-        setCharacterQueryString(prevString => `${prevString}&`);
-      }
+      setCharacterQueryString('');
     }
   }, [characterQueryParams]);
 
+  useEffect(() => {
+    dispatch(changeQueryString(characterQueryString)); //redux
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [characterQueryString]);
+
+  //   useEffect(() => {
+  //     console.log(
+  //       'state changed. String:',
+  //       characterQueryString
+  //       //   'params:',
+  //       //   characterQueryParams
+  //     );
+  //   }, [characterQueryString]);
+
+  //   useEffect(() => {
+  //     if (
+  //       characterQueryParams.name.length > 0 ||
+  //       characterQueryParams.gender.length > 0 ||
+  //       characterQueryParams.status.length > 0
+  //     ) {
+  //       setCharacterQueryString('/character/?');
+  //     } else {
+  //       setCharacterQueryString('/character/');
+  //     }
+  //     if (characterQueryParams.name.length > 0) {
+  //       setCharacterQueryString(
+  //         prevString => `${prevString}name=${characterQueryParams.name}`
+  //       );
+  //       if (
+  //         characterQueryParams.gender.length > 0 ||
+  //         characterQueryParams.status.length > 0
+  //       ) {
+  //         setCharacterQueryString(prevString => `${prevString}&`);
+  //       }
+  //     }
+  //     if (characterQueryParams.gender.length > 0) {
+  //       setCharacterQueryString(prevString =>
+  //         prevString.concat(
+  //           `gender=${characterQueryParams.gender.join(',')}`
+  //         )
+  //       );
+  //       if (
+  //         characterQueryParams.name.length > 0 ||
+  //         characterQueryParams.status.length > 0
+  //       ) {
+  //         setCharacterQueryString(prevString => `${prevString}&`);
+  //       }
+  //     }
+  //     if (characterQueryParams.status.length > 0) {
+  //       setCharacterQueryString(prevString =>
+  //         prevString.concat(`status=${characterQueryParams.status}`)
+  //       );
+  //       if (
+  //         characterQueryParams.gender.length > 0 ||
+  //         characterQueryParams.name.length > 0
+  //       ) {
+  //         setCharacterQueryString(prevString => `${prevString}&`);
+  //       }
+  //     }
+  //   }, [characterQueryParams]);
+
   const rawStringQueryFormating = query => String(query).toLowerCase();
-  const genderQueryFormating = query => {
-    if (characterQueryParams.genderQuery.includes(query)) {
-      const newQ = characterQueryParams.genderQuery.filter(
+  const genderFormating = query => {
+    if (characterQueryParams.gender.includes(query)) {
+      const newQ = characterQueryParams.gender.filter(
         gender => gender !== query
       );
       setCharacterQueryParams(prevParams => ({
         ...prevParams,
-        genderQuery: newQ,
+        gender: newQ,
       }));
       return;
     }
     setCharacterQueryParams(prevParams => ({
       ...prevParams,
-      genderQuery: [...prevParams.genderQuery, query],
+      gender: [...prevParams.gender, query],
     }));
   };
 
@@ -99,7 +126,7 @@ export default function RamFilterComponent() {
       case 'name':
         setCharacterQueryParams(prevParams => ({
           ...prevParams,
-          nameQuery: rawStringQueryFormating(event.target.value),
+          name: rawStringQueryFormating(event.target.value),
         }));
 
         break;
@@ -107,7 +134,7 @@ export default function RamFilterComponent() {
       case 'female':
       case 'genderless':
       case 'unknown':
-        genderQueryFormating(event.target.name);
+        genderFormating(event.target.name);
         break;
 
       case 'Alive':
@@ -115,13 +142,13 @@ export default function RamFilterComponent() {
       case 'Unknown':
         setCharacterQueryParams(prevParams => ({
           ...prevParams,
-          statusQuery: rawStringQueryFormating(event.target.value),
+          status: rawStringQueryFormating(event.target.value),
         }));
         break;
       case 'All':
         setCharacterQueryParams(prevParams => ({
           ...prevParams,
-          statusQuery: '',
+          status: '',
         }));
         break;
 
@@ -193,12 +220,12 @@ export default function RamFilterComponent() {
                     key={index}
                     id={`radio-${index}`}
                     type="radio"
-                    name={`${status.name}`}
-                    value={status.name}
+                    name={`${status}`}
+                    value={status}
                     onChange={e => radioBtnHandler(e.currentTarget.value)}
-                    checked={statRadioValue === status.name}
+                    checked={statRadioValue === status}
                   >
-                    {status.name}
+                    {status}
                   </ToggleButton>
                 ))}
               </ButtonGroup>

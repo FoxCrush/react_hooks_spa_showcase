@@ -5,7 +5,7 @@ import RamPaginationLine from '../../components/pagination/';
 import ListGroup from 'react-bootstrap/ListGroup';
 import RamFilterComponent from '../../components/ramFilterComponent';
 import { reqAllCharByPage } from '../../services/ram-request-options';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { toggleButtonVisibility } from '../../redux/ramBtnSlice';
 
 const controller = new AbortController();
@@ -16,6 +16,9 @@ export default function RamMainView() {
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(
     sessionStorage.getItem('page')
+  );
+  const filterQueryString = useSelector(
+    state => state.ramQueryString.ramRequestQueryString
   );
 
   const ramCharactersRequest = (q, cs) =>
@@ -28,6 +31,10 @@ export default function RamMainView() {
 
   //redux
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    ramCharactersRequest(`character/${filterQueryString}`);
+  }, [filterQueryString]);
 
   useEffect(() => {
     //redux

@@ -24,6 +24,7 @@ export default function RamMainView() {
   const ramCharactersRequest = (q, cs) =>
     reqAllCharByPage(q, cs)
       .then(({ data }) => {
+        console.log('set state', data, Date.now());
         setAllCharacters(data.results);
         setDataInfo(data.info);
       })
@@ -31,6 +32,29 @@ export default function RamMainView() {
 
   //redux
   const dispatch = useDispatch();
+  // const stateArr = [
+  //   characters,
+  //   dataInfo,
+  //   error,
+  //   currentPage,
+  //   filterQueryString,
+  // ];
+
+  // useEffect(() => {
+  //   console.log('first useEffect', stateArr[0]);
+  // }, [stateArr[0]]);
+  // useEffect(() => {
+  //   console.log('second useEffect', stateArr[1]);
+  // }, [stateArr[1]]);
+  // useEffect(() => {
+  //   console.log('third useEffect', stateArr[2]);
+  // }, [stateArr[2]]);
+  // useEffect(() => {
+  //   console.log('fourth useEffect', stateArr[3]);
+  // }, [stateArr[3]]);
+  // useEffect(() => {
+  //   console.log('fifth useEffect', stateArr[4]);
+  // }, [stateArr[4]]);
 
   useEffect(() => {
     if (filterQueryString.length > 0) {
@@ -46,17 +70,19 @@ export default function RamMainView() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    if (characters.length !== 0) {
-      return;
-    }
-    // console.log('requesting new characters');
-    const requestString = `character/?page=${currentPage}`;
-    ramCharactersRequest(requestString, controller.signal);
-    // Decent way to cancel request in case of component
-    // unmount before req settled
-    return () => controller.abort;
-  }, [characters, currentPage]);
+  // useEffect(() => {
+  //   // if (characters.length !== 0) {
+  //   //   return;
+  //   // }
+  //   if (currentPage) {
+  //     console.log('characters,page useEffect', currentPage);
+  //     const requestString = `character/?page=${currentPage}`;
+  //     ramCharactersRequest(requestString, controller.signal);
+  //     // Decent way to cancel request in case of component
+  //     // unmount before req settled
+  //     return () => controller.abort;
+  //   }
+  // }, [currentPage]);
 
   const handlePageClick = event => {
     const { selected } = event;

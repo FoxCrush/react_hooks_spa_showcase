@@ -4,7 +4,14 @@ const ramCharRequestBaseParams = axios.create({
   baseURL: 'https://rickandmortyapi.com/api/',
 });
 
-const reqAllCharByPage = (query = '', cancelSignal = null) =>
-  ramCharRequestBaseParams.get(query, { signal: cancelSignal });
+let prevQString = '';
+const reqAllCharByPage = (query = '', cancelSignal = null) => {
+  if (prevQString !== query) {
+    console.log('different request');
+    prevQString = query;
+    return ramCharRequestBaseParams.get(query, { signal: cancelSignal });
+  }
+  throw new Error('same request');
+};
 
 export { reqAllCharByPage };

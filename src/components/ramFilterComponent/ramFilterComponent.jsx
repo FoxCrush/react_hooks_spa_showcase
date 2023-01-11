@@ -45,6 +45,7 @@ export default function RamFilterComponent() {
     dispatch(changeQueryString(characterQueryString)); //redux
 
     if (characterQueryString) {
+      console.log('first');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [characterQueryString]);

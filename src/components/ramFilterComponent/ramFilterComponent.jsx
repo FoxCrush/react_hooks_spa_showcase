@@ -42,8 +42,9 @@ export default function RamFilterComponent() {
   }, [characterQueryParams]);
 
   useEffect(() => {
-    if (characterQueryString.length >= 0) {
-      dispatch(changeQueryString(characterQueryString)); //redux
+    dispatch(changeQueryString(characterQueryString)); //redux
+
+    if (characterQueryString) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [characterQueryString]);
@@ -103,10 +104,6 @@ export default function RamFilterComponent() {
   };
 
   const radioBtnHandler = value => {
-    debounce(() => {
-      console.log('debouncing');
-    }, 300);
-
     setStatRadioValue(value);
   };
 

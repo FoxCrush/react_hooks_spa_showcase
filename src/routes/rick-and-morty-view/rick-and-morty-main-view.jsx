@@ -18,7 +18,7 @@ export default function RamMainView() {
     sessionStorage.getItem('page')
   );
   const filterQueryString = useSelector(
-    state => state.ramQueryString.ramRequestQueryString
+    state => state.ramQueryString.queryString
   );
 
   const ramCharactersRequest = (q, cs) =>
@@ -33,10 +33,9 @@ export default function RamMainView() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (filterQueryString) {
+    if (filterQueryString.length > 0) {
+      setError(null);
       ramCharactersRequest(`character/${filterQueryString}`);
-    } else {
-      ramCharactersRequest('character/');
     }
   }, [filterQueryString]);
 
@@ -51,6 +50,7 @@ export default function RamMainView() {
     if (characters.length !== 0) {
       return;
     }
+    // console.log('requesting new characters');
     const requestString = `character/?page=${currentPage}`;
     ramCharactersRequest(requestString, controller.signal);
     // Decent way to cancel request in case of component
@@ -68,7 +68,7 @@ export default function RamMainView() {
 
   return (
     <Fragment>
-      {error && <h3>{`HTTP Request error message: ${error.message}`}</h3>}
+      {error && <h3>{error.message}</h3>}
       <RamFilterComponent />
       <ListGroup as="ul">
         {characters.map(character => {

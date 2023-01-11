@@ -3,11 +3,11 @@ import { createSlice } from '@reduxjs/toolkit';
 export const ramQueryStringSlice = createSlice({
   name: 'ramQueryString',
   initialState: {
-    queryString: '/character/',
+    queryString: '',
   },
   reducers: {
     changeQueryString: (state, action) => {
-      state.ramRequestQueryString = action.payload;
+      state.queryString = action.payload;
     },
   },
 });

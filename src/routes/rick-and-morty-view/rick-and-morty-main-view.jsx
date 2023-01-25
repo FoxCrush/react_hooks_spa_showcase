@@ -21,14 +21,17 @@ export default function RamMainView() {
     state => state.ramQueryString.queryString
   );
 
-  const ramCharactersRequest = (q, cs) =>
-    reqAllCharByPage(q, cs)
+  const ramCharactersRequest = (q, cs) => {
+    console.log('loading started');
+    return reqAllCharByPage(q, cs)
       .then(({ data }) => {
         console.log('set state', data, Date.now());
         setAllCharacters(data.results);
         setDataInfo(data.info);
       })
-      .catch(error => setError(error));
+      .catch(error => setError(error))
+      .finally(console.log('loading resolved'));
+  };
 
   //redux
   const dispatch = useDispatch();

@@ -14,6 +14,7 @@ export default function Main() {
     state => state.optionVisibilityControl.isButtonVisible
   );
   const dispatch = useDispatch();
+
   const handleFilterButtonClick = () => {
     dispatch(toggleFilterVisibility());
   };

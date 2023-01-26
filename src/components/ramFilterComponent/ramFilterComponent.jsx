@@ -2,10 +2,8 @@ import React, { useEffect, useState } from 'react';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
-import DropdownButton from 'react-bootstrap/DropdownButton';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { useDispatch, useSelector } from 'react-redux';
-import { FloatingLabel, FormGroup, ToggleButton } from 'react-bootstrap';
+import { FloatingLabel, FormGroup } from 'react-bootstrap';
 import { changeFilterParams } from '../../redux/ramQuerySlice';
 import debounce from 'lodash.debounce';
 
@@ -18,7 +16,6 @@ export default function RamFilterComponent() {
   );
   const dispatch = useDispatch();
 
-  const [statRadioValue, setStatRadioValue] = useState('All');
   const [characterQueryParams, setCharacterQueryParams] = useState({
     name: '',
     gender: '',
@@ -27,22 +24,26 @@ export default function RamFilterComponent() {
 
   const rawStringQueryFormating = query => String(query).toLowerCase();
 
-  const formChangeHandler = event => {
-    console.log('eventHandler', event.target.name, event.target.value);
+  const formChangeHandler = debounce(event => {
     setCharacterQueryParams(prevState => {
-      return { ...prevState, [event.target.name]: event.target.value };
+      return {
+        ...prevState,
+        [event.target.name]: rawStringQueryFormating(event.target.value),
+      };
     });
-  };
+  }, 1000);
+
   useEffect(() => {
     console.log(characterQueryParams);
     dispatch(changeFilterParams(characterQueryParams));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [characterQueryParams]);
 
   if (!isFilterVisible) {
     return;
   } else {
     return (
-      <FormGroup onChange={debounce(formChangeHandler, 400)}>
+      <FormGroup onChange={formChangeHandler}>
         <Row>
           <Col>
             <FloatingLabel label="Filter by name">

@@ -22,7 +22,6 @@ export default function RamMainView() {
   // );
 
   const ramCharactersRequest = (page = '', cancelSignal) => {
-    console.log('loading started');
     return reqAllCharByPage(page, cancelSignal)
       .then(({ data }) => {
         console.log('set state', data, Date.now());

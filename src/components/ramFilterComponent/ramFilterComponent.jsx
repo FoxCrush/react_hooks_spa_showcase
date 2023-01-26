@@ -5,7 +5,7 @@ import Row from 'react-bootstrap/Row';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { useDispatch, useSelector } from 'react-redux';
-import { ToggleButton } from 'react-bootstrap';
+import { FloatingLabel, FormGroup, ToggleButton } from 'react-bootstrap';
 import { changeQueryString } from '../../redux/ramQuerySlice';
 // import debounce from 'lodash.debounce';
 
@@ -21,126 +21,51 @@ export default function RamFilterComponent() {
     gender: '',
     status: '',
   });
-  // const [characterQueryString, setCharacterQueryString] = useState('');
 
-  const statusesRadioArray = ['Alive', 'Dead', 'Unknown', 'All'];
-  const genderRadioArray = ['Male', 'Female', 'Genderless', 'Unknown', 'All'];
-
-  // useEffect(() => {
-  //   setCharacterQueryString('');
-  //   if (Object.values(characterQueryParams).some(param => param.length > 0)) {
-  //     setCharacterQueryString('?');
-  //     for (const queryOptionName in characterQueryParams) {
-  //       if (characterQueryParams[queryOptionName].length > 0) {
-  //         setCharacterQueryString(prevString =>
-  //           prevString.concat(
-  //             `${queryOptionName}=${characterQueryParams[queryOptionName]}&`
-  //           )
-  //         );
-  //       }
-  //     }
-  //   }
-  // },[characterQueryParams]);
-
-  // useEffect(() => {
-  //   dispatch(changeQueryString(characterQueryString)); //redux
-
-  //   if (characterQueryString) {
-  //     console.log('first');
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [characterQueryString]);
+  const statusesRadioArray = ['All', 'Alive', 'Dead', 'Unknown'];
+  const genderRadioArray = ['All', 'Male', 'Female', 'Genderless', 'Unknown'];
 
   const rawStringQueryFormating = query => String(query).toLowerCase();
 
   const formChangeHandler = event => {
-    console.log('eventHandler', event.currentTarget.name);
-    // switch (event.target.name) {
-    //   case 'name':
-    //     setCharacterQueryParams(prevParams => ({
-    //       ...prevParams,
-    //       name: rawStringQueryFormating(event.target.value),
-    //     }));
-    //     break;
-
-    //   default:
-    // }
+    console.log('eventHandler', event.target);
   };
-
-  // const radioBtnHandler = value => {
-  //   console.log('value', value.currentTarget);
-  //   setStatRadioValue(value);
-  // };
 
   if (!isFilterVisible) {
     return;
   } else {
     return (
-      <Form>
-        <Row onChange={formChangeHandler}>
+      <FormGroup onChange={formChangeHandler}>
+        <Row>
           <Col>
-            <Form.Control name="name" placeholder="By name" />
+            <FloatingLabel label="Filter by name">
+              <Form.Control name="name" placeholder="name" />
+            </FloatingLabel>
           </Col>
           <Col>
-            <DropdownButton
-              as={ButtonGroup}
-              // key="Primary"
-              // id={`ram-filter`}
-              // variant="primary"
-              title={
-                characterQueryParams.gender
-                  ? characterQueryParams.gender
-                  : 'Gender'
-              }
-            >
-              <ButtonGroup>
+            <FloatingLabel label="Gender">
+              <Form.Select aria-label="Gender selection">
                 {genderRadioArray.map((gender, index) => (
-                  <ToggleButton
-                    key={index}
-                    // id={`radio-${index}g`}
-                    type="radio"
-                    name={`gender-${gender}`}
-                    value={gender}
-                    // onChange={formChangeHandler}
-                    // checked={statRadioValue === gender}
-                  >
+                  <option key={index} value={gender.toLowerCase()}>
                     {gender}
-                  </ToggleButton>
+                  </option>
                 ))}
-              </ButtonGroup>
-            </DropdownButton>
+              </Form.Select>
+            </FloatingLabel>
           </Col>
           <Col>
-            <DropdownButton
-              as={ButtonGroup}
-              // key="Primary"
-              // id={`dropdown-variants-$'Primary'-status`}
-              // variant="primary"
-              title={
-                characterQueryParams.status
-                  ? characterQueryParams.status
-                  : 'Status'
-              }
-            >
-              <ButtonGroup>
+            <FloatingLabel label="Status">
+              <Form.Select aria-label="Gender selection">
                 {statusesRadioArray.map((status, index) => (
-                  <ToggleButton
-                    key={index}
-                    // id={`radio-${index}s`}
-                    type="radio"
-                    name={`${status}`}
-                    value={status}
-                    // onChange={formChangeHandler}
-                    // checked={statRadioValue === status}
-                  >
+                  <option key={index} value={status.toLowerCase()}>
                     {status}
-                  </ToggleButton>
+                  </option>
                 ))}
-              </ButtonGroup>
-            </DropdownButton>
+              </Form.Select>
+            </FloatingLabel>
           </Col>
         </Row>
-      </Form>
+      </FormGroup>
     );
   }
 }

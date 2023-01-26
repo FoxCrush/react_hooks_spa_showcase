@@ -6,12 +6,8 @@ const ramCharRequestBaseParams = axios.create({
 
 let prevQString = '';
 const reqAllCharByPage = (query = '', cancelSignal = null) => {
-  if (prevQString !== query) {
-    console.log('different request');
-    prevQString = query;
-    return ramCharRequestBaseParams.get(query, { signal: cancelSignal });
-  }
-  throw new Error('same request');
+  prevQString = query;
+  return ramCharRequestBaseParams.get(query, { signal: cancelSignal });
 };
 
 export { reqAllCharByPage };

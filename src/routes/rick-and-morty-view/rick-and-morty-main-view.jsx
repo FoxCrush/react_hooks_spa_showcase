@@ -21,7 +21,7 @@ export default function RamMainView() {
     state => state.ramQueryString.queryString
   );
 
-  const ramCharactersRequest = (q, cs) => {
+  const ramCharactersRequest = (q = '', cs) => {
     console.log('loading started');
     return reqAllCharByPage(q, cs)
       .then(({ data }) => {
@@ -59,12 +59,12 @@ export default function RamMainView() {
   //   console.log('fifth useEffect', stateArr[4]);
   // }, [stateArr[4]]);
 
-  useEffect(() => {
-    if (filterQueryString.length > 0) {
-      setError(null);
-      ramCharactersRequest(`character/${filterQueryString}`);
-    }
-  }, [filterQueryString]);
+  // useEffect(() => {
+  //   if (filterQueryString.length > 0) {
+  //     setError(null);
+  //     ramCharactersRequest(`character/${filterQueryString}`);
+  //   }
+  // }, [filterQueryString]);
 
   useEffect(() => {
     //redux
@@ -73,19 +73,19 @@ export default function RamMainView() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // useEffect(() => {
-  //   // if (characters.length !== 0) {
-  //   //   return;
-  //   // }
-  //   if (currentPage) {
-  //     console.log('characters,page useEffect', currentPage);
-  //     const requestString = `character/?page=${currentPage}`;
-  //     ramCharactersRequest(requestString, controller.signal);
-  //     // Decent way to cancel request in case of component
-  //     // unmount before req settled
-  //     return () => controller.abort;
-  //   }
-  // }, [currentPage]);
+  useEffect(() => {
+    // if (characters.length !== 0) {
+    //   return;
+    // }
+    if (currentPage) {
+      console.log('characters,page useEffect', currentPage);
+      const requestString = `character/?page=${currentPage}`;
+      ramCharactersRequest(requestString, controller.signal);
+      // Decent way to cancel request in case of component
+      // unmount before req settled
+      return () => controller.abort;
+    }
+  }, [currentPage]);
 
   const handlePageClick = event => {
     const { selected } = event;

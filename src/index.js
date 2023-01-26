@@ -8,8 +8,8 @@ import Main from './routes/main-view';
 import ErrorPage from './routes/utility/error-page';
 import RamMainView from './routes/rick-and-morty-view';
 import RamCharacterView from './routes/ram-character-veiw';
-import store from './redux/store'
-import { Provider } from 'react-redux'
+import store from './redux/store';
+import { Provider } from 'react-redux';
 
 const router = createHashRouter([
   {
@@ -19,7 +19,8 @@ const router = createHashRouter([
     children: [
       {
         path: 'rickandmorty',
-        element: <RamMainView/>,
+        element: <RamMainView />,
+        errorElement: <ErrorPage />,
       },
     ],
   },
@@ -34,7 +35,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-    <RouterProvider router={router} />
+      <RouterProvider router={router} />
     </Provider>
   </React.StrictMode>
 );

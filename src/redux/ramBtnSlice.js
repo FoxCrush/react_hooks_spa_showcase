@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 export const ramBtnVisibilitySlice = createSlice({
   name: 'optionVisibilityControl',
   initialState: {
+    isLoading: false,
     isButtonVisible: false,
     isFilterVisible: false,
   },
@@ -13,10 +14,13 @@ export const ramBtnVisibilitySlice = createSlice({
     toggleFilterVisibility: state => {
       state.isFilterVisible = !state.isFilterVisible;
     },
+    toggleLoading: (state, action) => {
+      state.isLoading = action.payload;
+    },
   },
 });
 
-export const { toggleButtonVisibility, toggleFilterVisibility } =
+export const { toggleButtonVisibility, toggleFilterVisibility, toggleLoading } =
   ramBtnVisibilitySlice.actions;
 
 export default ramBtnVisibilitySlice.reducer;

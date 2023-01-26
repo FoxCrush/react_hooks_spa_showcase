@@ -9,7 +9,8 @@ import {
   reqCharactersByFilter,
 } from '../../services/ram-request-options';
 import { useDispatch, useSelector } from 'react-redux';
-import { toggleButtonVisibility } from '../../redux/ramBtnSlice';
+import { toggleButtonVisibility, toggleLoading } from '../../redux/ramBtnSlice';
+import { MutatingDots } from 'react-loader-spinner';
 
 const controller = new AbortController();
 
@@ -20,7 +21,13 @@ export default function RamMainView() {
   const [currentPage, setCurrentPage] = useState(
     sessionStorage.getItem('page')
   );
+  // const [filterQueryParams] = useState(
+  //   useSelector(state => state.ramFilterParams)
+  // );
   const filterQueryParams = useSelector(state => state.ramFilterParams);
+  console.log('filterQueryParams', filterQueryParams);
+  let loading = useSelector(state => state.optionVisibilityControl.isLoading);
+  console.log('loading', loading);
 
   useEffect(() => {
     const ramFilteredCharactersRequest = params => {
@@ -30,12 +37,13 @@ export default function RamMainView() {
           setDataInfo(data.info);
         })
         .catch(error => setError(error))
-        .finally(console.log('loading resolved'));
+        .finally(dispatch(toggleLoading(false)));
     };
     ramFilteredCharactersRequest(filterQueryParams);
     setCurrentPage(1);
     sessionStorage.setItem('page', 1);
     return () => controller.abort;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterQueryParams]);
 
   const ramCharactersRequest = (page = '', cancelSignal) => {
@@ -45,7 +53,7 @@ export default function RamMainView() {
         setDataInfo(data.info);
       })
       .catch(error => setError(error))
-      .finally(console.log('loading resolved'));
+      .finally(dispatch(toggleLoading(false)));
   };
 
   //redux
@@ -65,6 +73,7 @@ export default function RamMainView() {
       // unmount before req settled
       return () => controller.abort;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage]);
 
   const handlePageClick = event => {
@@ -74,27 +83,80 @@ export default function RamMainView() {
     sessionStorage.setItem('page', selected + 1);
   };
 
+  // if (loading) {
+  //   return (
+  //     <div
+  //       style={{
+  //         position: 'absolute',
+  //         left: '50%',
+  //         top: '50%',
+  //         transform: 'translate(-50%, -50%)',
+  //       }}
+  //     >
+  //       <MutatingDots
+  //         height="100"
+  //         width="100"
+  //         color="#4fa94d"
+  //         secondaryColor="#4fa94d"
+  //         radius="12.5"
+  //         ariaLabel="mutating-dots-loading"
+  //         wrapperStyle={{}}
+  //         wrapperClass=""
+  //         visible={true}
+  //       />
+  //     </div>
+  //   );
+  // }
   return (
     <Fragment>
-      {error && <h3>{error.message}</h3>}
       <RamFilterComponent />
-      <ListGroup as="ul">
-        {characters.map(character => {
-          return (
-            <ListGroup.Item as="li" action variant="info" key={character.id}>
-              <Link to={`${character.id}`}>
-                {character.id} {character.name}
-              </Link>
-            </ListGroup.Item>
-          );
-        })}
-      </ListGroup>
-      {characters.length > 0 && (
-        <RamPaginationLine
-          onPageClick={handlePageClick}
-          pagesAmount={dataInfo.pages}
-          currentPage={parseInt(currentPage)}
-        />
+      {loading ? (
+        <div
+          style={{
+            position: 'absolute',
+            left: '50%',
+            top: '50%',
+            transform: 'translate(-50%, -50%)',
+          }}
+        >
+          <MutatingDots
+            height="100"
+            width="100"
+            color="#4fa94d"
+            secondaryColor="#4fa94d"
+            radius="12.5"
+            ariaLabel="mutating-dots-loading"
+            wrapperStyle={{}}
+            wrapperClass=""
+            visible={true}
+          />
+        </div>
+      ) : (
+        <>
+          <ListGroup as="ul">
+            {characters.map(character => {
+              return (
+                <ListGroup.Item
+                  as="li"
+                  action
+                  variant="info"
+                  key={character.id}
+                >
+                  <Link to={`${character.id}`}>
+                    {character.id} {character.name}
+                  </Link>
+                </ListGroup.Item>
+              );
+            })}
+          </ListGroup>
+          {characters.length > 0 && (
+            <RamPaginationLine
+              onPageClick={handlePageClick}
+              pagesAmount={dataInfo.pages}
+              currentPage={parseInt(currentPage)}
+            />
+          )}
+        </>
       )}
     </Fragment>
   );

@@ -6,8 +6,8 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { useDispatch, useSelector } from 'react-redux';
 import { FloatingLabel, FormGroup, ToggleButton } from 'react-bootstrap';
-import { changeQueryString } from '../../redux/ramQuerySlice';
-// import debounce from 'lodash.debounce';
+import { changeFilterParams } from '../../redux/ramQuerySlice';
+import debounce from 'lodash.debounce';
 
 const statusesRadioArray = ['All', 'Alive', 'Dead', 'Unknown'];
 const genderRadioArray = ['All', 'Male', 'Female', 'Genderless', 'Unknown'];
@@ -35,13 +35,14 @@ export default function RamFilterComponent() {
   };
   useEffect(() => {
     console.log(characterQueryParams);
+    dispatch(changeFilterParams(characterQueryParams));
   }, [characterQueryParams]);
 
   if (!isFilterVisible) {
     return;
   } else {
     return (
-      <FormGroup onChange={formChangeHandler}>
+      <FormGroup onChange={debounce(formChangeHandler, 400)}>
         <Row>
           <Col>
             <FloatingLabel label="Filter by name">

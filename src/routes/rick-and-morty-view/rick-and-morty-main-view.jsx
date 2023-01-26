@@ -17,9 +17,9 @@ export default function RamMainView() {
   const [currentPage, setCurrentPage] = useState(
     sessionStorage.getItem('page')
   );
-  const filterQueryString = useSelector(
-    state => state.ramQueryString.queryString
-  );
+  // const filterQueryString = useSelector(
+  //   state => state.ramQueryString.queryString
+  // );
 
   const ramCharactersRequest = (page = '', cancelSignal) => {
     console.log('loading started');

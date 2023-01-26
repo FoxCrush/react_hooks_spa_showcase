@@ -1,15 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-export const ramQueryStringSlice = createSlice({
-  name: 'ramQueryString',
+export const ramFilterParams = createSlice({
+  name: 'ramFilterParams',
   initialState: {
-    queryString: '',
+    name: '',
+    gender: '',
+    status: '',
   },
   reducers: {
-    changeQueryString: (state, action) => {
-      state.queryString = action.payload;
-    },
+    changeFilterParams: (state, action) => action.payload,
   },
 });
-export const { changeQueryString } = ramQueryStringSlice.actions;
-export default ramQueryStringSlice.reducer;
+export const { changeFilterParams } = ramFilterParams.actions;
+export default ramFilterParams.reducer;

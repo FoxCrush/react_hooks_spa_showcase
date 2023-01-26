@@ -22,7 +22,12 @@ export default function RamFilterComponent() {
     status: '',
   });
 
-  const rawStringQueryFormating = query => String(query).toLowerCase();
+  const rawStringQueryFormating = query => {
+    if (query === 'all') {
+      return '';
+    }
+    return String(query).toLowerCase();
+  };
 
   const formChangeHandler = debounce(event => {
     setCharacterQueryParams(prevState => {
@@ -31,10 +36,9 @@ export default function RamFilterComponent() {
         [event.target.name]: rawStringQueryFormating(event.target.value),
       };
     });
-  }, 1000);
+  }, 400);
 
   useEffect(() => {
-    console.log(characterQueryParams);
     dispatch(changeFilterParams(characterQueryParams));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [characterQueryParams]);

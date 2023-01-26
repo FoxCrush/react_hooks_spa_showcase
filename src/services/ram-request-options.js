@@ -5,24 +5,14 @@ const ramCharRequestBaseParams = axios.create({
 });
 
 const reqAllCharByPage = (page = 1, cancelSignal = null) => {
-  // prevQString = page;
   return ramCharRequestBaseParams.get(`character/?page=${page}`, {
     signal: cancelSignal,
   });
 };
 
-const reqCharactersByFilter = (
-  page = 1,
-  { name, gender, status },
-  cancelSignal = null
-) => {
-  // prevQString = page;
+const reqCharactersByFilter = (page = 1, params, cancelSignal = null) => {
   return ramCharRequestBaseParams.get(`character/?page=${page}`, {
-    params: {
-      ...(name && { name: name }),
-      ...(gender && { gender: gender }),
-      ...(status && { status: status }),
-    },
+    params,
     signal: cancelSignal,
   });
 };

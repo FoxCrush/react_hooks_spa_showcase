@@ -4,7 +4,10 @@ import { Link } from 'react-router-dom';
 import RamPaginationLine from '../../components/pagination/';
 import ListGroup from 'react-bootstrap/ListGroup';
 import RamFilterComponent from '../../components/ramFilterComponent';
-import { reqAllCharByPage } from '../../services/ram-request-options';
+import {
+  reqAllCharByPage,
+  reqCharactersByFilter,
+} from '../../services/ram-request-options';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleButtonVisibility } from '../../redux/ramBtnSlice';
 
@@ -17,14 +20,27 @@ export default function RamMainView() {
   const [currentPage, setCurrentPage] = useState(
     sessionStorage.getItem('page')
   );
-  // const filterQueryString = useSelector(
-  //   state => state.ramQueryString.queryString
-  // );
+  const filterQueryParams = useSelector(state => state.ramFilterParams);
+
+  useEffect(() => {
+    const ramFilteredCharactersRequest = params => {
+      return reqCharactersByFilter(1, params, controller.signal)
+        .then(({ data }) => {
+          setAllCharacters(data.results);
+          setDataInfo(data.info);
+        })
+        .catch(error => setError(error))
+        .finally(console.log('loading resolved'));
+    };
+    ramFilteredCharactersRequest(filterQueryParams);
+    setCurrentPage(1);
+    sessionStorage.setItem('page', 1);
+    return () => controller.abort;
+  }, [filterQueryParams]);
 
   const ramCharactersRequest = (page = '', cancelSignal) => {
     return reqAllCharByPage(page, cancelSignal)
       .then(({ data }) => {
-        console.log('set state', data, Date.now());
         setAllCharacters(data.results);
         setDataInfo(data.info);
       })
@@ -34,13 +50,6 @@ export default function RamMainView() {
 
   //redux
   const dispatch = useDispatch();
-  // const stateArr = [
-  //   characters,
-  //   dataInfo,
-  //   error,
-  //   currentPage,
-  //   filterQueryString,
-  // ];
 
   useEffect(() => {
     //redux
@@ -51,8 +60,6 @@ export default function RamMainView() {
 
   useEffect(() => {
     if (currentPage) {
-      console.log('characters,page useEffect', currentPage);
-      // const requestString = `character/?page=${currentPage}`;
       ramCharactersRequest(currentPage, controller.signal);
       // Decent way to cancel request in case of component
       // unmount before req settled
@@ -62,7 +69,6 @@ export default function RamMainView() {
 
   const handlePageClick = event => {
     const { selected } = event;
-    // const requestString = `character/?page=${selected + 1}`;
     ramCharactersRequest(selected + 1);
     setCurrentPage(selected + 1);
     sessionStorage.setItem('page', selected + 1);

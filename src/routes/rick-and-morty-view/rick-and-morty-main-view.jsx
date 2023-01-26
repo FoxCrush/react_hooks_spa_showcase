@@ -21,9 +21,9 @@ export default function RamMainView() {
     state => state.ramQueryString.queryString
   );
 
-  const ramCharactersRequest = (q = '', cs) => {
+  const ramCharactersRequest = (page = '', cancelSignal) => {
     console.log('loading started');
-    return reqAllCharByPage(q, cs)
+    return reqAllCharByPage(page, cancelSignal)
       .then(({ data }) => {
         console.log('set state', data, Date.now());
         setAllCharacters(data.results);
@@ -43,29 +43,6 @@ export default function RamMainView() {
   //   filterQueryString,
   // ];
 
-  // useEffect(() => {
-  //   console.log('first useEffect', stateArr[0]);
-  // }, [stateArr[0]]);
-  // useEffect(() => {
-  //   console.log('second useEffect', stateArr[1]);
-  // }, [stateArr[1]]);
-  // useEffect(() => {
-  //   console.log('third useEffect', stateArr[2]);
-  // }, [stateArr[2]]);
-  // useEffect(() => {
-  //   console.log('fourth useEffect', stateArr[3]);
-  // }, [stateArr[3]]);
-  // useEffect(() => {
-  //   console.log('fifth useEffect', stateArr[4]);
-  // }, [stateArr[4]]);
-
-  // useEffect(() => {
-  //   if (filterQueryString.length > 0) {
-  //     setError(null);
-  //     ramCharactersRequest(`character/${filterQueryString}`);
-  //   }
-  // }, [filterQueryString]);
-
   useEffect(() => {
     //redux
     dispatch(toggleButtonVisibility());
@@ -74,13 +51,10 @@ export default function RamMainView() {
   }, []);
 
   useEffect(() => {
-    // if (characters.length !== 0) {
-    //   return;
-    // }
     if (currentPage) {
       console.log('characters,page useEffect', currentPage);
-      const requestString = `character/?page=${currentPage}`;
-      ramCharactersRequest(requestString, controller.signal);
+      // const requestString = `character/?page=${currentPage}`;
+      ramCharactersRequest(currentPage, controller.signal);
       // Decent way to cancel request in case of component
       // unmount before req settled
       return () => controller.abort;
@@ -89,8 +63,8 @@ export default function RamMainView() {
 
   const handlePageClick = event => {
     const { selected } = event;
-    const requestString = `character/?page=${selected + 1}`;
-    ramCharactersRequest(requestString);
+    // const requestString = `character/?page=${selected + 1}`;
+    ramCharactersRequest(selected + 1);
     setCurrentPage(selected + 1);
     sessionStorage.setItem('page', selected + 1);
   };

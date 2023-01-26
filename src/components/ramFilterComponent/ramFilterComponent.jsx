@@ -9,6 +9,9 @@ import { FloatingLabel, FormGroup, ToggleButton } from 'react-bootstrap';
 import { changeQueryString } from '../../redux/ramQuerySlice';
 // import debounce from 'lodash.debounce';
 
+const statusesRadioArray = ['All', 'Alive', 'Dead', 'Unknown'];
+const genderRadioArray = ['All', 'Male', 'Female', 'Genderless', 'Unknown'];
+
 export default function RamFilterComponent() {
   const isFilterVisible = useSelector(
     state => state.optionVisibilityControl.isFilterVisible
@@ -22,14 +25,17 @@ export default function RamFilterComponent() {
     status: '',
   });
 
-  const statusesRadioArray = ['All', 'Alive', 'Dead', 'Unknown'];
-  const genderRadioArray = ['All', 'Male', 'Female', 'Genderless', 'Unknown'];
-
   const rawStringQueryFormating = query => String(query).toLowerCase();
 
   const formChangeHandler = event => {
-    console.log('eventHandler', event.target);
+    console.log('eventHandler', event.target.name, event.target.value);
+    setCharacterQueryParams(prevState => {
+      return { ...prevState, [event.target.name]: event.target.value };
+    });
   };
+  useEffect(() => {
+    console.log(characterQueryParams);
+  }, [characterQueryParams]);
 
   if (!isFilterVisible) {
     return;
@@ -44,7 +50,7 @@ export default function RamFilterComponent() {
           </Col>
           <Col>
             <FloatingLabel label="Gender">
-              <Form.Select aria-label="Gender selection">
+              <Form.Select name="gender" aria-label="Gender selection">
                 {genderRadioArray.map((gender, index) => (
                   <option key={index} value={gender.toLowerCase()}>
                     {gender}
@@ -55,7 +61,7 @@ export default function RamFilterComponent() {
           </Col>
           <Col>
             <FloatingLabel label="Status">
-              <Form.Select aria-label="Gender selection">
+              <Form.Select name="status" aria-label="Gender selection">
                 {statusesRadioArray.map((status, index) => (
                   <option key={index} value={status.toLowerCase()}>
                     {status}

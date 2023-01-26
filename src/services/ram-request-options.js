@@ -4,10 +4,27 @@ const ramCharRequestBaseParams = axios.create({
   baseURL: 'https://rickandmortyapi.com/api/',
 });
 
-let prevQString = '';
-const reqAllCharByPage = (query = '', cancelSignal = null) => {
-  prevQString = query;
-  return ramCharRequestBaseParams.get(query, { signal: cancelSignal });
+const reqAllCharByPage = (page = 1, cancelSignal = null) => {
+  // prevQString = page;
+  return ramCharRequestBaseParams.get(`character/?page=${page}`, {
+    signal: cancelSignal,
+  });
 };
 
-export { reqAllCharByPage };
+const reqCharactersByFilter = (
+  page = 1,
+  { name, gender, status },
+  cancelSignal = null
+) => {
+  // prevQString = page;
+  return ramCharRequestBaseParams.get(`character/?page=${page}`, {
+    params: {
+      ...(name && { name: name }),
+      ...(gender && { gender: gender }),
+      ...(status && { status: status }),
+    },
+    signal: cancelSignal,
+  });
+};
+
+export { reqAllCharByPage, reqCharactersByFilter };

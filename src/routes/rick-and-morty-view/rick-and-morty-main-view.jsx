@@ -9,9 +9,8 @@ import {
   reqCharactersByFilter,
 } from '../../services/ram-request-options';
 import { useDispatch, useSelector } from 'react-redux';
-import { toggleButtonVisibility, toggleLoading } from '../../redux/ramBtnSlice';
+import { toggleButtonVisibility, setLoading } from '../../redux/ramBtnSlice';
 import { MutatingDots } from 'react-loader-spinner';
-import debounce from 'lodash.debounce';
 
 const controller = new AbortController();
 
@@ -34,28 +33,24 @@ export default function RamMainView() {
 
   const filterQueryParams = useSelector(state => state.ramFilterParams);
   const loading = useSelector(state => state.optionVisibilityControl.isLoading);
+  console.log('loading', loading);
 
-  const ramFilteredCharactersRequest = debounce(
-    (page = currentPage, params) => {
-      return reqCharactersByFilter(page, params, controller.signal)
-        .then(({ data }) => {
-          setAllCharacters(data.results);
-          setDataInfo(data.info);
-        })
-        .catch(error => setError(error))
-        .finally(dispatch(toggleLoading(false)));
-    },
-    1000
-  );
-  // setCurrentPage(1), sessionStorage.setItem('page', 1);
+  const ramFilteredCharactersRequest = (page = currentPage, params) => {
+    return reqCharactersByFilter(page, params, controller.signal)
+      .then(({ data }) => {
+        setAllCharacters(data.results);
+        setDataInfo(data.info);
+      })
+      .catch(error => setError(error))
+      .finally(dispatch(setLoading(false)));
+  };
 
   useEffect(() => {
-    dispatch(toggleLoading(true));
     ramFilteredCharactersRequest(1, filterQueryParams);
     setCurrentPage(1);
     sessionStorage.setItem('page', 1);
     return () => {
-      ramFilteredCharactersRequest.cancel();
+      // ramFilteredCharactersRequest.cancel();
       return controller.abort;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -68,11 +63,10 @@ export default function RamMainView() {
         setDataInfo(data.info);
       })
       .catch(error => setError(error))
-      .finally(dispatch(toggleLoading(false)));
+      .finally(dispatch(setLoading(false)));
   };
 
   useEffect(() => {
-    dispatch(toggleLoading(true));
     if (Object.values(filterQueryParams).length > 0) {
       ramFilteredCharactersRequest(currentPage, filterQueryParams);
     } else {
@@ -81,13 +75,15 @@ export default function RamMainView() {
     // Decent way to cancel request in case of component
     // unmount before req settled
     return () => {
-      ramFilteredCharactersRequest.cancel();
+      // ramFilteredCharactersRequest.cancel();
       return controller.abort;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage]);
 
   const handlePageClick = event => {
+    dispatch(setLoading(true));
+
     const { selected } = event;
     setCurrentPage(selected + 1);
     sessionStorage.setItem('page', selected + 1);
@@ -118,7 +114,7 @@ export default function RamMainView() {
           />
         </div>
       ) : (
-        <>
+        <Fragment>
           <ListGroup as="ul">
             {characters.map(character => {
               return (
@@ -142,7 +138,7 @@ export default function RamMainView() {
               currentPage={parseInt(currentPage)}
             />
           )}
-        </>
+        </Fragment>
       )}
     </Fragment>
   );

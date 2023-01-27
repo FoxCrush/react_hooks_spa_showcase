@@ -14,13 +14,13 @@ export const ramBtnVisibilitySlice = createSlice({
     toggleFilterVisibility: state => {
       state.isFilterVisible = !state.isFilterVisible;
     },
-    toggleLoading: (state, action) => {
+    setLoading: (state, action) => {
       state.isLoading = action.payload;
     },
   },
 });
 
-export const { toggleButtonVisibility, toggleFilterVisibility, toggleLoading } =
+export const { toggleButtonVisibility, toggleFilterVisibility, setLoading } =
   ramBtnVisibilitySlice.actions;
 
 export default ramBtnVisibilitySlice.reducer;

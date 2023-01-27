@@ -2,7 +2,11 @@ import React from 'react';
 import ReactPaginate from 'react-paginate';
 import styles from './pagination.module.css';
 
-export default function RamPaginationLine({ onPageClick, pagesAmount,currentPage }) {
+export default function RamPaginationLine({
+  onPageClick,
+  pagesAmount,
+  currentPage,
+}) {
   return (
     <>
       <ReactPaginate
@@ -22,7 +26,7 @@ export default function RamPaginationLine({ onPageClick, pagesAmount,currentPage
         pageRangeDisplayed={2}
         pageCount={pagesAmount}
         previousLabel="< previous"
-        forcePage={currentPage-1}
+        forcePage={currentPage - 1}
         renderOnZeroPageCount={null}
       />
     </>

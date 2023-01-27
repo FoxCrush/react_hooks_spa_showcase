@@ -5,7 +5,6 @@ import Row from 'react-bootstrap/Row';
 import { FloatingLabel, FormGroup } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { changeFilterParams } from '../../redux/ramQuerySlice';
-import { toggleLoading } from '../../redux/ramBtnSlice';
 
 const statusesRadioArray = ['All', 'Alive', 'Dead', 'Unknown'];
 const genderRadioArray = ['All', 'Male', 'Female', 'Genderless', 'Unknown'];
@@ -29,13 +28,7 @@ export default function RamFilterComponent() {
     return String(query).toLowerCase();
   };
 
-  const formChangeHandler = e => {
-    dispatch(toggleLoading(true));
-    addQueryParam(e);
-    console.log('form change handler evoced');
-  };
-
-  const addQueryParam = event => {
+  const formChangeHandler = event => {
     setCharacterQueryParams(prevState => {
       return {
         ...prevState,

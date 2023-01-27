@@ -11,6 +11,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleButtonVisibility, toggleLoading } from '../../redux/ramBtnSlice';
 import { MutatingDots } from 'react-loader-spinner';
+import debounce from 'lodash.debounce';
 
 const controller = new AbortController();
 
@@ -21,16 +22,12 @@ export default function RamMainView() {
   const [currentPage, setCurrentPage] = useState(
     sessionStorage.getItem('page')
   );
-  // const [filterQueryParams] = useState(
-  //   useSelector(state => state.ramFilterParams)
-  // );
+
   const filterQueryParams = useSelector(state => state.ramFilterParams);
-  console.log('filterQueryParams', filterQueryParams);
   let loading = useSelector(state => state.optionVisibilityControl.isLoading);
-  console.log('loading', loading);
 
   useEffect(() => {
-    const ramFilteredCharactersRequest = params => {
+    const ramFilteredCharactersRequest = debounce(params => {
       return reqCharactersByFilter(1, params, controller.signal)
         .then(({ data }) => {
           setAllCharacters(data.results);
@@ -38,11 +35,16 @@ export default function RamMainView() {
         })
         .catch(error => setError(error))
         .finally(dispatch(toggleLoading(false)));
-    };
+    }, 1000);
+
     ramFilteredCharactersRequest(filterQueryParams);
+
     setCurrentPage(1);
     sessionStorage.setItem('page', 1);
-    return () => controller.abort;
+    return () => {
+      ramFilteredCharactersRequest.cancel();
+      return controller.abort;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterQueryParams]);
 
@@ -83,30 +85,6 @@ export default function RamMainView() {
     sessionStorage.setItem('page', selected + 1);
   };
 
-  // if (loading) {
-  //   return (
-  //     <div
-  //       style={{
-  //         position: 'absolute',
-  //         left: '50%',
-  //         top: '50%',
-  //         transform: 'translate(-50%, -50%)',
-  //       }}
-  //     >
-  //       <MutatingDots
-  //         height="100"
-  //         width="100"
-  //         color="#4fa94d"
-  //         secondaryColor="#4fa94d"
-  //         radius="12.5"
-  //         ariaLabel="mutating-dots-loading"
-  //         wrapperStyle={{}}
-  //         wrapperClass=""
-  //         visible={true}
-  //       />
-  //     </div>
-  //   );
-  // }
   return (
     <Fragment>
       <RamFilterComponent />

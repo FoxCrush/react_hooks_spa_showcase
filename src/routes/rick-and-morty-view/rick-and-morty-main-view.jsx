@@ -11,6 +11,8 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleButtonVisibility, setLoading } from '../../redux/ramBtnSlice';
 import { MutatingDots } from 'react-loader-spinner';
+import { useLayoutEffect } from 'react';
+import { useRef } from 'react';
 
 const controller = new AbortController();
 
@@ -33,7 +35,7 @@ export default function RamMainView() {
 
   const filterQueryParams = useSelector(state => state.ramFilterParams);
   const loading = useSelector(state => state.optionVisibilityControl.isLoading);
-  console.log('loading', loading);
+  const prevPage = useRef(0);
 
   const ramFilteredCharactersRequest = (page = currentPage, params) => {
     setError(null);
@@ -54,6 +56,7 @@ export default function RamMainView() {
   useEffect(() => {
     ramFilteredCharactersRequest(1, filterQueryParams);
     setCurrentPage(1);
+    prevPage.current = 1;
     sessionStorage.setItem('page', 1);
     return () => {
       // ramFilteredCharactersRequest.cancel();
@@ -74,6 +77,10 @@ export default function RamMainView() {
   };
 
   useEffect(() => {
+    console.log(prevPage.current, currentPage);
+    if (prevPage.current === currentPage) {
+      return;
+    }
     if (Object.values(filterQueryParams).length > 0) {
       ramFilteredCharactersRequest(currentPage, filterQueryParams);
     } else {
@@ -90,11 +97,19 @@ export default function RamMainView() {
 
   const handlePageClick = event => {
     dispatch(setLoading(true));
-
     const { selected } = event;
     setCurrentPage(selected + 1);
+    prevPage.current = currentPage;
     sessionStorage.setItem('page', selected + 1);
   };
+
+  useLayoutEffect(() => {
+    console.log('i am layout hook');
+
+    return () => {
+      console.log('i am callback of layout hook');
+    };
+  }, []);
 
   return (
     <Fragment>

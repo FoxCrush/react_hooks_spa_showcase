@@ -11,7 +11,6 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleButtonVisibility, setLoading } from '../../redux/ramBtnSlice';
 import { MutatingDots } from 'react-loader-spinner';
-import { useLayoutEffect } from 'react';
 import { useRef } from 'react';
 
 const controller = new AbortController();
@@ -21,7 +20,7 @@ export default function RamMainView() {
   const [dataInfo, setDataInfo] = useState({ pages: 1 });
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(
-    sessionStorage.getItem('page')
+    parseInt(sessionStorage.getItem('page'))
   );
   //redux
   const dispatch = useDispatch();
@@ -54,12 +53,15 @@ export default function RamMainView() {
   };
 
   useEffect(() => {
-    ramFilteredCharactersRequest(1, filterQueryParams);
-    setCurrentPage(1);
-    prevPage.current = 1;
-    sessionStorage.setItem('page', 1);
+    if (Object.values(filterQueryParams).length > 0) {
+      ramFilteredCharactersRequest(1, filterQueryParams, controller.signal);
+      console.log('setting page to 1', prevPage.current, ' vs ', currentPage);
+      setCurrentPage(1);
+      prevPage.current = 1;
+      sessionStorage.setItem('page', 1);
+    }
+
     return () => {
-      // ramFilteredCharactersRequest.cancel();
       return controller.abort;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -77,19 +79,22 @@ export default function RamMainView() {
   };
 
   useEffect(() => {
-    console.log(prevPage.current, currentPage);
     if (prevPage.current === currentPage) {
       return;
     }
+
     if (Object.values(filterQueryParams).length > 0) {
-      ramFilteredCharactersRequest(currentPage, filterQueryParams);
+      ramFilteredCharactersRequest(
+        currentPage,
+        filterQueryParams,
+        controller.signal
+      );
     } else {
       ramCharactersRequest(currentPage, controller.signal);
     }
     // Decent way to cancel request in case of component
     // unmount before req settled
     return () => {
-      // ramFilteredCharactersRequest.cancel();
       return controller.abort;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -98,18 +103,10 @@ export default function RamMainView() {
   const handlePageClick = event => {
     dispatch(setLoading(true));
     const { selected } = event;
-    setCurrentPage(selected + 1);
+    setCurrentPage(parseInt(selected + 1));
     prevPage.current = currentPage;
     sessionStorage.setItem('page', selected + 1);
   };
-
-  useLayoutEffect(() => {
-    console.log('i am layout hook');
-
-    return () => {
-      console.log('i am callback of layout hook');
-    };
-  }, []);
 
   return (
     <Fragment>

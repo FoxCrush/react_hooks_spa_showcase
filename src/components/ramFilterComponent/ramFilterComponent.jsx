@@ -18,7 +18,9 @@ export default function RamFilterComponent() {
   );
   const dispatch = useDispatch();
 
-  const [characterQueryParams, setCharacterQueryParams] = useState({});
+  const [characterQueryParams, setCharacterQueryParams] = useState(
+    useSelector(state => state.ramFilterParams)
+  );
 
   const rawStringQueryFormating = query => {
     if (query === 'all') {
@@ -41,13 +43,10 @@ export default function RamFilterComponent() {
   };
 
   const dbFormChangeHandler = useMemo(() => {
-    // dispatch(setLoading(true));
-    console.log('setting loading');
     return debounce(formChangeHandler, 1000);
   }, [formChangeHandler]);
 
   useEffect(() => {
-    console.log('debounce cancellation');
     return () => {
       dbFormChangeHandler.cancel();
     };
@@ -65,12 +64,21 @@ export default function RamFilterComponent() {
         <Row>
           <Col>
             <FloatingLabel label="Filter by name">
-              <Form.Control autoComplete="off" name="name" placeholder="name" />
+              <Form.Control
+                autoComplete="off"
+                name="name"
+                placeholder="name"
+                defaultValue={characterQueryParams?.name}
+              />
             </FloatingLabel>
           </Col>
           <Col>
             <FloatingLabel label="Gender">
-              <Form.Select name="gender" aria-label="Gender selection">
+              <Form.Select
+                name="gender"
+                aria-label="Gender selection"
+                defaultValue={characterQueryParams?.gender}
+              >
                 {genderRadioArray.map((gender, index) => (
                   <option key={index} value={gender.toLowerCase()}>
                     {gender}
@@ -81,7 +89,11 @@ export default function RamFilterComponent() {
           </Col>
           <Col>
             <FloatingLabel label="Status">
-              <Form.Select name="status" aria-label="Gender selection">
+              <Form.Select
+                name="status"
+                aria-label="Gender selection"
+                defaultValue={characterQueryParams?.status}
+              >
                 {statusesRadioArray.map((status, index) => (
                   <option key={index} value={status.toLowerCase()}>
                     {status}

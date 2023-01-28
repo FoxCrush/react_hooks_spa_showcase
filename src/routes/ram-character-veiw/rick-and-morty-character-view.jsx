@@ -30,13 +30,11 @@ export default function RamCharacterView() {
   } else {
     return (
       <Fragment>
-        <Link to={`/rickandmorty`}>Back to List</Link>
-        <h3>Rick and morty character view</h3>
+        <h3>{name}</h3>
 
-        <img src={image} alt={`${name}'s iamge`} />
-        <p>Character with ID: {id}</p>
-        <p>Character with Name: {name}</p>
-        <p>Character with Status: {status}</p>
+        <img style={{ minHeight: 300 }} src={image} alt={`${name}'s iamge`} />
+        <p>Character ID: {id}</p>
+        <p>Character Status: {status}</p>
         <p>Character's Species: {species}</p>
         <Link to={`/rickandmorty`}>Back to List</Link>
       </Fragment>

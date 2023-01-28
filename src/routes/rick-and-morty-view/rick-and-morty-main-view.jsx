@@ -36,13 +36,19 @@ export default function RamMainView() {
   console.log('loading', loading);
 
   const ramFilteredCharactersRequest = (page = currentPage, params) => {
+    setError(null);
     return reqCharactersByFilter(page, params, controller.signal)
       .then(({ data }) => {
         setAllCharacters(data.results);
         setDataInfo(data.info);
+        dispatch(setLoading(false));
       })
-      .catch(error => setError(error))
-      .finally(dispatch(setLoading(false)));
+      .catch(error => {
+        setError(error);
+        setAllCharacters([]);
+        setDataInfo({ pages: 1 });
+        dispatch(setLoading(false));
+      });
   };
 
   useEffect(() => {
@@ -57,13 +63,14 @@ export default function RamMainView() {
   }, [filterQueryParams]);
 
   const ramCharactersRequest = (page = '', cancelSignal) => {
+    setError(null);
     return reqAllCharByPage(page, cancelSignal)
       .then(({ data }) => {
         setAllCharacters(data.results);
         setDataInfo(data.info);
+        dispatch(setLoading(false));
       })
-      .catch(error => setError(error))
-      .finally(dispatch(setLoading(false)));
+      .catch(error => setError(error), dispatch(setLoading(false)));
   };
 
   useEffect(() => {
@@ -92,6 +99,7 @@ export default function RamMainView() {
   return (
     <Fragment>
       <RamFilterComponent />
+      {characters.length === 0 && <h2>Nothing to show</h2>}
       {loading ? (
         <div
           style={{

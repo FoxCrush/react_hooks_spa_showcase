@@ -40,6 +40,10 @@ export default function RamMainView() {
         setAllCharacters(response.results);
         setDataInfo(response.info);
         dispatch(setLoading(false));
+      } else {
+        setAllCharacters([]);
+        setDataInfo(initialDataInfo);
+        dispatch(setLoading(false));
       }
     });
   }, 100);

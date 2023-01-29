@@ -8,7 +8,6 @@ import { fetchRAMCharacters } from '../../services/ram-request-options';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleButtonVisibility, setLoading } from '../../redux/ramBtnSlice';
 import { MutatingDots } from 'react-loader-spinner';
-import { useRef } from 'react';
 import debounce from 'lodash.debounce';
 
 const initialDataInfo = { pages: 1, count: 0 };
@@ -17,8 +16,6 @@ export default function RamMainView() {
   const [characters, setAllCharacters] = useState([]);
   const [dataInfo, setDataInfo] = useState(initialDataInfo);
   const [prevDataInfo, setPrevDataInfo] = useState(initialDataInfo);
-
-  const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(
     parseInt(sessionStorage.getItem('page'))
   );
@@ -47,7 +44,6 @@ export default function RamMainView() {
   }, 100);
 
   useEffect(() => {
-    setError(null);
     if (prevDataInfo !== dataInfo) {
       setCurrentPage(1);
       sessionStorage.setItem('page', 1);
@@ -56,7 +52,7 @@ export default function RamMainView() {
       parseInt(sessionStorage.getItem('page')),
       filterQueryParams
     );
-
+    return () => ramFilteredCharactersRequest.cancel;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterQueryParams]);
 
@@ -69,6 +65,7 @@ export default function RamMainView() {
     } else {
       ramFilteredCharactersRequest(currentPage, {});
     }
+    return () => ramFilteredCharactersRequest.cancel;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage]);
 
@@ -78,9 +75,6 @@ export default function RamMainView() {
     setCurrentPage(parseInt(selected + 1));
     sessionStorage.setItem('page', selected + 1);
   };
-  if (error) {
-    console.log(error.message);
-  }
 
   return (
     <Fragment>

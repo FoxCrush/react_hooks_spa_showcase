@@ -7,16 +7,24 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Button from 'react-bootstrap/Button';
 import { useDispatch, useSelector } from 'react-redux';
-import { toggleFilterVisibility } from '../../redux/ramBtnSlice';
+import { toggleFilterVisibility, setLoading } from '../../redux/ramBtnSlice';
+import MutatingLoader from '../../components/loader';
 
 export default function Main() {
   const isOptionButtonVisible = useSelector(
     state => state.optionVisibilityControl.isButtonVisible
   );
+  const isLoaderActive = useSelector(
+    state => state.optionVisibilityControl.isLoading
+  );
+
   const dispatch = useDispatch();
 
   const handleFilterButtonClick = () => {
     dispatch(toggleFilterVisibility());
+  };
+  const handleLoaderButtonClick = () => {
+    dispatch(setLoading(!isLoaderActive));
   };
 
   return (
@@ -35,11 +43,15 @@ export default function Main() {
             >
               Show filter
             </Button>
+            <Button variant="primary" onClick={handleLoaderButtonClick}>
+              Show loader
+            </Button>
           </Nav>
           <img src={logo} className={styles.AppLogo} alt="logo" />
         </Container>
       </Navbar>
       <div id="detail">
+        {isLoaderActive && <MutatingLoader />}
         <Outlet />
       </div>
     </Fragment>

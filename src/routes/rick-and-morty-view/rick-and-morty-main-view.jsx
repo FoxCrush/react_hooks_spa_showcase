@@ -7,8 +7,8 @@ import RamFilterComponent from '../../components/ramFilterComponent';
 import { fetchRAMCharacters } from '../../services/ram-request-options';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleButtonVisibility, setLoading } from '../../redux/ramBtnSlice';
-import { MutatingDots } from 'react-loader-spinner';
 import debounce from 'lodash.debounce';
+import MutatingLoader from '../../components/loader';
 
 const initialDataInfo = { pages: 1, count: 0 };
 
@@ -81,26 +81,7 @@ export default function RamMainView() {
       <RamFilterComponent />
       {characters.length === 0 && <h2>Nothing to show</h2>}
       {loading ? (
-        <div
-          style={{
-            position: 'absolute',
-            left: '50%',
-            top: '50%',
-            transform: 'translate(-50%, -50%)',
-          }}
-        >
-          <MutatingDots
-            height="100"
-            width="100"
-            color="#4fa94d"
-            secondaryColor="#4fa94d"
-            radius="12.5"
-            ariaLabel="mutating-dots-loading"
-            wrapperStyle={{}}
-            wrapperClass=""
-            visible={true}
-          />
-        </div>
+        <MutatingLoader />
       ) : (
         <Fragment>
           <ListGroup as="ul">

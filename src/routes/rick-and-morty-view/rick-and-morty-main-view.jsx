@@ -4,20 +4,20 @@ import { Link } from 'react-router-dom';
 import RamPaginationLine from '../../components/pagination/';
 import ListGroup from 'react-bootstrap/ListGroup';
 import RamFilterComponent from '../../components/ramFilterComponent';
-import {
-  reqAllCharByPage,
-  reqCharactersByFilter,
-} from '../../services/ram-request-options';
+import { fetchRAMCharacters } from '../../services/ram-request-options';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleButtonVisibility, setLoading } from '../../redux/ramBtnSlice';
 import { MutatingDots } from 'react-loader-spinner';
 import { useRef } from 'react';
+import debounce from 'lodash.debounce';
 
-const controller = new AbortController();
+const initialDataInfo = { pages: 1, count: 0 };
 
 export default function RamMainView() {
   const [characters, setAllCharacters] = useState([]);
-  const [dataInfo, setDataInfo] = useState({ pages: 1 });
+  const [dataInfo, setDataInfo] = useState(initialDataInfo);
+  const [prevDataInfo, setPrevDataInfo] = useState(initialDataInfo);
+
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(
     parseInt(sessionStorage.getItem('page'))
@@ -34,69 +34,41 @@ export default function RamMainView() {
 
   const filterQueryParams = useSelector(state => state.ramFilterParams);
   const loading = useSelector(state => state.optionVisibilityControl.isLoading);
-  const prevPage = useRef(0);
 
-  const ramFilteredCharactersRequest = (page = currentPage, params) => {
-    setError(null);
-    return reqCharactersByFilter(page, params, controller.signal)
-      .then(({ data }) => {
-        setAllCharacters(data.results);
-        setDataInfo(data.info);
+  const ramFilteredCharactersRequest = debounce((page = 1, params) => {
+    setPrevDataInfo(dataInfo);
+    fetchRAMCharacters(page, params).then(response => {
+      if (response) {
+        setAllCharacters(response.results);
+        setDataInfo(response.info);
         dispatch(setLoading(false));
-      })
-      .catch(error => {
-        setError(error);
-        setAllCharacters([]);
-        setDataInfo({ pages: 1 });
-        dispatch(setLoading(false));
-      });
-  };
+      }
+    });
+  }, 100);
 
   useEffect(() => {
-    if (Object.values(filterQueryParams).length > 0) {
-      ramFilteredCharactersRequest(1, filterQueryParams, controller.signal);
-      console.log('setting page to 1', prevPage.current, ' vs ', currentPage);
+    setError(null);
+    if (prevDataInfo !== dataInfo) {
       setCurrentPage(1);
-      prevPage.current = 1;
       sessionStorage.setItem('page', 1);
     }
+    ramFilteredCharactersRequest(
+      parseInt(sessionStorage.getItem('page')),
+      filterQueryParams
+    );
 
-    return () => {
-      return controller.abort;
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterQueryParams]);
 
-  const ramCharactersRequest = (page = '', cancelSignal) => {
-    setError(null);
-    return reqAllCharByPage(page, cancelSignal)
-      .then(({ data }) => {
-        setAllCharacters(data.results);
-        setDataInfo(data.info);
-        dispatch(setLoading(false));
-      })
-      .catch(error => setError(error), dispatch(setLoading(false)));
-  };
-
   useEffect(() => {
-    if (prevPage.current === currentPage) {
-      return;
-    }
-
     if (Object.values(filterQueryParams).length > 0) {
       ramFilteredCharactersRequest(
-        currentPage,
-        filterQueryParams,
-        controller.signal
+        sessionStorage.getItem('page'),
+        filterQueryParams
       );
     } else {
-      ramCharactersRequest(currentPage, controller.signal);
+      ramFilteredCharactersRequest(currentPage, {});
     }
-    // Decent way to cancel request in case of component
-    // unmount before req settled
-    return () => {
-      return controller.abort;
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage]);
 
@@ -104,9 +76,11 @@ export default function RamMainView() {
     dispatch(setLoading(true));
     const { selected } = event;
     setCurrentPage(parseInt(selected + 1));
-    prevPage.current = currentPage;
     sessionStorage.setItem('page', selected + 1);
   };
+  if (error) {
+    console.log(error.message);
+  }
 
   return (
     <Fragment>

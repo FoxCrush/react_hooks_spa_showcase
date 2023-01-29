@@ -2,7 +2,10 @@ import { createSlice } from '@reduxjs/toolkit';
 
 export const ramFilterParams = createSlice({
   name: 'ramFilterParams',
-  initialState: {},
+  initialState: {
+    changeFilterParams: {},
+    ramPage: 1,
+  },
   reducers: {
     changeFilterParams: (state, action) => {
       const { name, gender, status } = action.payload;
@@ -16,6 +19,9 @@ export const ramFilterParams = createSlice({
         }),
       };
       return clearedPayload;
+    },
+    ramPage: (state, action) => {
+      return (state = action.payload);
     },
   },
 });

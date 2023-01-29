@@ -4,17 +4,24 @@ const ramCharRequestBaseParams = axios.create({
   baseURL: 'https://rickandmortyapi.com/api/',
 });
 
-const reqAllCharByPage = (page = 1, cancelSignal = null) => {
-  return ramCharRequestBaseParams.get(`character/?page=${page}`, {
-    signal: cancelSignal,
-  });
+let cancelToken;
+const fetchRAMCharacters = async (page = 1, params) => {
+  if (typeof cancelToken != typeof undefined) {
+    cancelToken.cancel('Operation canceled due to new request.');
+  }
+  cancelToken = axios.CancelToken.source();
+  try {
+    const results = await ramCharRequestBaseParams.get(
+      `character/?page=${page}`,
+      {
+        params,
+        cancelToken: cancelToken.token,
+      }
+    );
+    return results.data;
+  } catch (error) {
+    console.log(error.message);
+  }
 };
 
-const reqCharactersByFilter = (page = 1, params, cancelSignal = null) => {
-  return ramCharRequestBaseParams.get(`character/?page=${page}`, {
-    params,
-    signal: cancelSignal,
-  });
-};
-
-export { reqAllCharByPage, reqCharactersByFilter };
+export { fetchRAMCharacters };

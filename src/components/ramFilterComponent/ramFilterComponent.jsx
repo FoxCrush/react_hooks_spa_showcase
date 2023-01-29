@@ -43,7 +43,7 @@ export default function RamFilterComponent() {
   };
 
   const dbFormChangeHandler = useMemo(() => {
-    return debounce(formChangeHandler, 1000);
+    return debounce(formChangeHandler, 300);
   }, [formChangeHandler]);
 
   useEffect(() => {

@@ -23,6 +23,7 @@ export default function RamMainView() {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    dispatch(setLoading(true));
     //redux
     dispatch(toggleButtonVisibility());
     return () => dispatch(toggleButtonVisibility());
@@ -79,7 +80,7 @@ export default function RamMainView() {
   return (
     <Fragment>
       <RamFilterComponent />
-      {characters.length === 0 && <h2>Nothing to show</h2>}
+      {characters.length === 0 && !loading && <h2>Nothing to show</h2>}
       {loading ? (
         <MutatingLoader />
       ) : (

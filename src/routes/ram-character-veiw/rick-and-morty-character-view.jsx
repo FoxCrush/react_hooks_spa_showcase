@@ -4,7 +4,7 @@ import { Link, useParams } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import { useDispatch, useSelector } from 'react-redux';
-import { toggleButtonVisibility, setLoading } from '../../redux/ramBtnSlice';
+import { setLoading } from '../../redux/ramBtnSlice';
 import MutatingLoader from '../../components/loader';
 
 const ramCharRequestInstance = axios.create({
@@ -17,21 +17,28 @@ export default function RamCharacterView() {
   const [character, setCharacter] = useState({});
   const [error, setError] = useState(null);
   const loading = useSelector(state => state.optionVisibilityControl.isLoading);
+  const dispatch = useDispatch();
 
   useEffect(() => {
+    dispatch(setLoading(true));
     ramCharRequestInstance
       .get(`${params.id}`)
       .then(({ data }) => {
         setCharacter(data);
       })
       .catch(error => setError(error))
-      .finally();
+      .finally(dispatch(setLoading(false)));
 
     return () => controller.abort;
-  }, [params.id]);
+  }, [dispatch, params.id]);
 
-  const { id, name, image, status, species } = character;
+  const { name, image, status, species, location, origin, episode } = character;
+  console.log('character', character);
 
+  if (error) {
+    console.log('error', error);
+    return;
+  }
   if (loading) {
     return <MutatingLoader />;
   } else {
@@ -43,7 +50,6 @@ export default function RamCharacterView() {
             <Card.Title>{name}</Card.Title>
             <Card.Text>Status: {status}</Card.Text>
             <Card.Text>Species: {species}</Card.Text>
-            <Card.Text>ID: {id}</Card.Text>
 
             <Link to={`/rickandmorty`}>
               <Button variant="primary">Back to List</Button>

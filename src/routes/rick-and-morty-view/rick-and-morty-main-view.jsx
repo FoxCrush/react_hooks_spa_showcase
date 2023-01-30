@@ -92,16 +92,21 @@ export default function RamMainView() {
           <ListGroup as="ul">
             {characters.map(character => {
               return (
-                <ListGroup.Item
-                  as="li"
-                  action
-                  variant="info"
-                  key={character.id}
-                >
-                  <Link to={`${character.id}`}>
-                    {character.id} {character.name}
-                  </Link>
-                </ListGroup.Item>
+                <Link to={`${character.id}`}>
+                  <ListGroup.Item
+                    as="li"
+                    action
+                    variant="flush"
+                    key={character.id}
+                  >
+                    <img
+                      alt={`rick and morty character ${character.name}`}
+                      src={character.image}
+                      style={{ minHeight: 300, minWidth: 300 }}
+                    />
+                    <p style={{ margin: '12px 12px' }}>{character.name}</p>
+                  </ListGroup.Item>
+                </Link>
               );
             })}
           </ListGroup>

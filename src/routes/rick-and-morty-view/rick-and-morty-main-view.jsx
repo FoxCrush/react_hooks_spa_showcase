@@ -82,31 +82,26 @@ export default function RamMainView() {
   };
 
   return (
-    <Fragment>
+    <>
       <RamFilterComponent />
-      {characters.length === 0 && !loading && <h2>Nothing to show</h2>}
+      {characters.length < 0 && !loading && <h2>Nothing to show</h2>}
       {loading ? (
         <MutatingLoader />
       ) : (
-        <Fragment>
-          <ListGroup as="ul">
+        <>
+          <ListGroup>
             {characters.map(character => {
               return (
-                <Link to={`${character.id}`}>
-                  <ListGroup.Item
-                    as="li"
-                    action
-                    variant="flush"
-                    key={character.id}
-                  >
+                <ListGroup.Item action variant="flush" key={character.id}>
+                  <Link to={`${character.id}`}>
                     <img
                       alt={`rick and morty character ${character.name}`}
                       src={character.image}
                       style={{ minHeight: 300, minWidth: 300 }}
                     />
                     <p style={{ margin: '12px 12px' }}>{character.name}</p>
-                  </ListGroup.Item>
-                </Link>
+                  </Link>
+                </ListGroup.Item>
               );
             })}
           </ListGroup>
@@ -117,8 +112,8 @@ export default function RamMainView() {
               currentPage={parseInt(currentPage)}
             />
           )}
-        </Fragment>
+        </>
       )}
-    </Fragment>
+    </>
   );
 }

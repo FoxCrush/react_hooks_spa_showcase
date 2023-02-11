@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 // import styles from './Ram-view.module.css';
 import RamPaginationLine from '../../components/pagination/';
@@ -46,7 +46,18 @@ export default function RamMainView() {
         dispatch(setLoading(false));
       }
     });
-  }, 100);
+  }, 200);
+
+  useEffect(() => {
+    if (characters.length < 1) {
+      return;
+    }
+    const scrollPosition = sessionStorage.getItem('scrollPosition');
+    if (scrollPosition) {
+      window.scrollTo(0, parseInt(scrollPosition, 10));
+      sessionStorage.removeItem('scrollPosition');
+    }
+  }, [characters]);
 
   useEffect(() => {
     if (prevDataInfo !== dataInfo) {
@@ -93,7 +104,15 @@ export default function RamMainView() {
             {characters.map(character => {
               return (
                 <ListGroup.Item action variant="flush" key={character.id}>
-                  <Link to={`${character.id}`}>
+                  <Link
+                    to={`${character.id}`}
+                    onClick={() =>
+                      sessionStorage.setItem(
+                        'scrollPosition',
+                        window.pageYOffset
+                      )
+                    }
+                  >
                     <img
                       alt={`rick and morty character ${character.name}`}
                       src={character.image}

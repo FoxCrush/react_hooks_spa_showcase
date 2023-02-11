@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toggleButtonVisibility, setLoading } from '../../redux/ramBtnSlice';
 import debounce from 'lodash.debounce';
 import MutatingLoader from '../../components/loader';
+import { Card, CardGroup, Row } from 'react-bootstrap';
 
 const initialDataInfo = { pages: 1, count: 0 };
 
@@ -100,10 +101,10 @@ export default function RamMainView() {
         <MutatingLoader />
       ) : (
         <>
-          <ListGroup>
+          <Row xs={1} md={5} className="g-4">
             {characters.map(character => {
               return (
-                <ListGroup.Item action variant="flush" key={character.id}>
+                <Card key={character.id}>
                   <Link
                     to={`${character.id}`}
                     onClick={() =>
@@ -113,17 +114,19 @@ export default function RamMainView() {
                       )
                     }
                   >
-                    <img
+                    <Card.Img
                       alt={`rick and morty character ${character.name}`}
                       src={character.image}
                       style={{ minHeight: 300, minWidth: 300 }}
                     />
-                    <p style={{ margin: '12px 12px' }}>{character.name}</p>
+                    <Card.Title style={{ margin: '12px 12px' }}>
+                      {character.name}
+                    </Card.Title>
                   </Link>
-                </ListGroup.Item>
+                </Card>
               );
             })}
-          </ListGroup>
+          </Row>
           {characters.length > 0 && (
             <RamPaginationLine
               onPageClick={handlePageClick}
